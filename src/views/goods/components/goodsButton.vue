@@ -34,10 +34,8 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .btn {
-  width: 80px;
-  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,10 +47,6 @@ export default {
   background-color: #eee;
   color: #000;
   border: none;
-  &:disabled {
-    color: #d8dde3;
-    background: #edf0f9;
-  }
 }
 /* type */
 .default {
@@ -77,7 +71,8 @@ export default {
 }
 /* size */
 .small {
-  width: 70px;
-  height: 32px;
+  width: 30px;
+  height: 40px;
+  padding: 12px 0;
 }
 </style>
