@@ -3,6 +3,7 @@
     <!-- 上边的一行表格查询 -->
     <viewsSearch
       text1="型号搜索"
+      ref="model"
       :allTaskStatusList="allTaskStatusList"
       @search="searchForm"
     ></viewsSearch>
@@ -33,8 +34,8 @@
         </template>
         <template #operate>
           <div style="display: flex">
-            <viewsButton @click="onMore" type="info">修改</viewsButton>
-            <viewsButton @click="onMore" type="info">删除</viewsButton>
+            <span class="span" @click="revisefn">修改</span>
+            <span class="span span-del" @click="delfn">删除</span>
           </div>
         </template>
       </viewsForm>
@@ -119,9 +120,8 @@ export default {
     onMore() {
       console.log("详情");
     },
-    searchForm(formInline) {
-      this.params.number = formInline.number;
-      this.params.status = formInline.status;
+    searchForm() {
+      this.params.name = this.$refs.model.formInline.number;
       this.allTask(1);
     },
     // 初始获取页面内容
@@ -160,6 +160,8 @@ export default {
         return value;
       });
     },
+    revisefn() {},
+    delfn() {},
   },
 };
 </script>
@@ -172,5 +174,14 @@ export default {
     margin-bottom: 20px;
     display: flex;
   }
+}
+.span {
+  display: flex;
+  cursor: pointer;
+  color: #5f84ff;
+  padding: 5px;
+}
+.span-del {
+  color: #ff5a5a;
 }
 </style>

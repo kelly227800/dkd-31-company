@@ -27,9 +27,11 @@
         :getSearchInfo="getSearchInfo"
         ref="form"
       >
-        <viewsButton @click="onMore" type="info">货道</viewsButton>
-        <viewsButton @click="onMore" type="info">策略</viewsButton>
-        <viewsButton @click="onMore" type="info">修改</viewsButton>
+        <div style="display: flex">
+          <span class="span" @click="cargolanesfn">货道</span>
+          <span class="span" @click="tacticsfn">策略</span>
+          <span class="span" @click="revisefn">修改</span>
+        </div>
       </viewsForm>
       <!-- 分页 -->
       <viewsPage
@@ -174,6 +176,9 @@ export default {
         return value;
       });
     },
+    cargolanesfn() {},
+    tacticsfn() {},
+    revisefn() {},
   },
 };
 </script>
@@ -186,5 +191,11 @@ export default {
     margin-bottom: 20px;
     display: flex;
   }
+}
+.span {
+  display: flex;
+  cursor: pointer;
+  color: #5f84ff;
+  padding: 5px;
 }
 </style>
