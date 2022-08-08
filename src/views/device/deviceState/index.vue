@@ -11,6 +11,7 @@
     <div class="result">
       <!-- 表格 -->
       <viewsForm
+        ref="form"
         :getSearchList="getSearchList"
         :tableHead="tableHead"
         :getSearchInfo="getSearchInfo"
@@ -24,7 +25,6 @@
         </template>
         <template #operate>
           <viewsButton @click="onMore" type="info">查看详情</viewsButton>
-          <DeviceDetails :dialogVisible.sync="dialogVisible"></DeviceDetails>
         </template>
       </viewsForm>
       <!-- 分页 -->
@@ -35,18 +35,35 @@
         :disabledDown="disabledDown"
       ></viewsPage>
     </div>
+    <DeviceDetails
+      v-if="dialogVisible"
+      :dialogVisible.sync="dialogVisible"
+      :list="merchandisesaleslist"
+      :Replenishment="Replenishment"
+      :Maintenance="Maintenance"
+      :allSales="allSales"
+      :sales="allsales"
+    ></DeviceDetails>
   </div>
 </template>
 
 <script>
 import moment from "moment";
 import { allTaskStatus } from "@/api/workOrder";
-import { getequipmentlistapi } from "@/api/device";
+import {
+  getequipmentlistapi,
+  getSalesapi,
+  getReplenishmentapi,
+  getMaintenanceapi,
+  getallSalesapi,
+  getallsalesapi,
+} from "@/api/device";
 import viewsSearch from "@/components/viewsSearch";
 import viewsForm from "./components/viewsForm.vue";
 import viewsPage from "@/components/viewsPage";
 import viewsButton from "@/components/viewsButton";
 import DeviceDetails from "./components/DeviceDetails.vue";
+import { timeFormat, getFirstDayOfMonth } from "@/gettimes";
 export default {
   name: "marketing",
   data() {
@@ -80,6 +97,11 @@ export default {
         status: "",
       },
       dialogVisible: false,
+      merchandisesaleslist: [],
+      Replenishment: 0,
+      Maintenance: 0,
+      allSales: 0,
+      allsales: 0,
     };
   },
   components: {
@@ -105,6 +127,41 @@ export default {
     onMore() {
       console.log("详情");
       this.dialogVisible = true;
+      setTimeout(async () => {
+        let monthfirstitem = getFirstDayOfMonth(new Date());
+        let monthfirstitems = getFirstDayOfMonth(new Date()) + " 00:00:00";
+        let newtimes = timeFormat(new Date());
+        let newtime = timeFormat(new Date()) + " 23:59:59";
+        let innerCodes = "";
+        let datas = {};
+        const res = this.$refs.form.currentRow;
+        // datas.vmType = res.vmType;
+        // datas.nodeId = res.nodeId;
+        datas.createUserId = res.createUserId;
+        innerCodes = res.innerCode;
+        const paramsparameter = {};
+        paramsparameter.innerCode = res.innerCode;
+        // paramsparameter.partnerId = res.partnerId;
+        paramsparameter.start = monthfirstitems;
+        paramsparameter.end = newtime;
+        this.allSales = await getallSalesapi(paramsparameter);
+        this.allsales = await getallsalesapi(paramsparameter);
+        this.merchandisesaleslist = await getSalesapi(
+          innerCodes,
+          monthfirstitem,
+          newtimes
+        );
+        this.Replenishment = await getReplenishmentapi(
+          innerCodes,
+          monthfirstitem,
+          newtimes
+        );
+        this.Maintenance = await getMaintenanceapi(
+          innerCodes,
+          monthfirstitem,
+          newtimes
+        );
+      });
     },
     searchForm() {
       this.params.innerCode =
