@@ -1,5 +1,10 @@
 <template>
-  <el-button :class="[type, size]" class="btn" @click="$emit('click')" :disabled='disabled'>
+  <el-button
+    :class="[type, size]"
+    class="btn"
+    @click="$emit('click')"
+    :disabled="disabled"
+  >
     <slot></slot>
   </el-button>
 </template>
@@ -18,10 +23,10 @@ export default {
       type: String,
       default: "",
     },
-    disabled:{
+    disabled: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   created() {},
 
@@ -62,7 +67,7 @@ export default {
   background-color: #fff;
   color: #5f84ff;
 }
-.primary{
+.primary {
   background-color: #d5ddf8;
   color: #606266;
 }
