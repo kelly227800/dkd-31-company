@@ -80,4 +80,8 @@ export default {
   width: 70px;
   height: 32px;
 }
+.mini {
+  width: 30px;
+  height: 32px;
+}
 </style>
