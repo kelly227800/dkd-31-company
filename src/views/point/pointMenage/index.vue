@@ -1,27 +1,17 @@
 <template>
-  <div>
-    点位管理
-  </div>
+  <div></div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-
-    }
+  data() {
+    return {};
   },
 
-  created () {
+  created() {},
 
-  },
-
-  methods: {
-
-  }
-}
+  methods: {},
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
