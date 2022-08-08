@@ -18,12 +18,14 @@ export function getGoodsData(fileName) {
  * @param {string} className 商品名称
  * @returns promise
  */
-export function searchGoodsType(pageIndex,pageSize,className) {
+export function searchGoodsType(pageIndex, pageSize, className) {
   return request({
     url: "/vm-service/skuClass/search",
     params: {
-        pageIndex,pageSize,className
-    }
+      pageIndex,
+      pageSize,
+      className,
+    },
   });
 }
 
@@ -37,7 +39,9 @@ export function addGoodsType(className) {
   return request({
     url: "/vm-service/skuClass",
     method: "POST",
-    className,
+    data: {
+      className,
+    },
   });
 }
 

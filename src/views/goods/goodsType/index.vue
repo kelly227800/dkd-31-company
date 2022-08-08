@@ -21,10 +21,10 @@
         :searchInfo="searchInfo"
       >
         <div class="goods_type_btn">
-          <goodsButton @click="onMore" class="goods_edit" size="small"
+          <goodsButton @click="onEdit" class="goods_edit" size="small"
             >修改</goodsButton
           >
-          <goodsButton @click="onMore" class="goods_delete" size="small"
+          <goodsButton @click="onDel" class="goods_delete" size="small"
             >删除</goodsButton
           >
         </div>
@@ -32,14 +32,17 @@
       <!-- 分页 -->
       <goodsPage
         :searchInfo="searchInfo"
-        :disabledPre="disabledPre"
-        :disabledNext="disabledNext"
-        @disabledPreFn="disabledPre = true"
-        @cancelDisabledPre="disabledPre = false"
-        @disabledNextFn="disabledNext = true"
-        @cancelDisabledNext="disabledNext = false"
+        @changePage="changePageFn"
       ></goodsPage>
     </div>
+    <!-- 新增弹框 -->
+    <goodsDialog
+      :dialogVisible="dialogVisible"
+      :pageIndex="searchInfo.pageIndex"
+      @close="closeAddDialog"
+      @changePage="changePageFn"
+    />
+    <!-- 修改弹框 -->
   </div>
 </template>
 
@@ -49,6 +52,7 @@ import goodsTypeSearch from "../components/goodsTypeSearch.vue";
 import goodsForm from "../components/goodsForm.vue";
 import goodsButton from "../components/goodsButton.vue";
 import goodsPage from "../components/goodsPage.vue";
+import goodsDialog from "../components/goodsDialog.vue";
 import { searchGoodsType } from "@/api/goods";
 export default {
   data() {
@@ -61,8 +65,7 @@ export default {
       ],
       searchList: [],
       searchInfo: {},
-      disabledPre: true,
-      disabledNext: false,
+      dialogVisible: false,
     };
   },
   components: {
@@ -71,6 +74,7 @@ export default {
     goodsForm,
     goodsButton,
     goodsPage,
+    goodsDialog,
   },
   created() {
     this.searchGoodsType();
@@ -79,24 +83,55 @@ export default {
   methods: {
     // 进入页面获取商品类型数据
     async searchGoodsType() {
-      const res = await searchGoodsType(1, 10);
-      // console.log(res);
-      this.searchInfo = res;
-      this.searchList = res.currentPageRecords;
+      try {
+        const res = await searchGoodsType(1, 10);
+        // console.log(res);
+        this.searchInfo = res;
+        this.searchList = res.currentPageRecords;
+      } catch (e) {
+        this.$message.error("获取商品类型数据失败");
+      }
     },
     // 搜索关键词获取商品类型数据
     async searchForm(className) {
-      const res = await searchGoodsType(1, 10, className);
-      // console.log(res)
-      this.searchInfo = res;
-      this.searchList = res.currentPageRecords;
+      try {
+        const res = await searchGoodsType(1, 10, className);
+        // console.log(res)
+        this.searchInfo = res;
+        this.searchList = res.currentPageRecords;
+      } catch (e) {
+        this.$message.error("获取商品类型数据失败");
+      }
     },
+    // 点击改变页码
+    async changePageFn(val) {
+      try {
+        // console.log('进入了')
+        const res = await searchGoodsType(val, 10);
+        console.log(res);
+        this.searchInfo = res;
+        this.searchList = res.currentPageRecords;
+      } catch (err) {
+        this.$message.error("获取商品类型数据失败");
+      }
+    },
+    // 点击新增
     onAdd() {
-      console.log("新增");
+      // console.log("新增");
+      this.dialogVisible = true;
     },
-    onMore() {
+    // 关闭新增弹框
+    closeAddDialog() {
+      this.dialogVisible = false;
+    },
+    // 修改商品类型
+    onEdit() {
       console.log("查看详情");
     },
+    // 删除商品类型
+    onDel() {
+      console.log('删除')
+    }
   },
 };
 </script>
