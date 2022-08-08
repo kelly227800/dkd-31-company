@@ -34,11 +34,16 @@
         :tableHead="tableHead"
         :getSearchInfo="getSearchInfo"
       >
-        <viewsButton @click="onMore()" type="info">查看详情</viewsButton>
-        <moreDialog
+        <!-- <template v-slot="scope">
+          <viewsButton @click="onMore(scope.row)" type="info"
+            >查看详情</viewsButton
+          >
+        </template> -->
+        <!-- <viewsButton @click="onMore()" type="info">查看详情</viewsButton> -->
+        <!-- <moreDialog
           @addSave="allTask"
           :visible.sync="dialogMoreVisible"
-        ></moreDialog>
+        ></moreDialog> -->
       </viewsForm>
       <!-- 分页 -->
       <viewsPage
@@ -53,9 +58,9 @@
 
 <script>
 import moment from "moment";
-import { allTaskStatus, getSearch,taskInfo } from "@/api/workOrder";
+import { allTaskStatus, getSearch } from "@/api/workOrder";
 import viewsSearch from "@/components/viewsSearch";
-import viewsForm from "@/components/viewsForm";
+import viewsForm from "./components/form.vue";
 import viewsPage from "@/components/viewsPage";
 import viewsButton from "@/components/viewsButton";
 // 弹层的组件
@@ -114,7 +119,7 @@ export default {
       dialogAddVisible: false, //添加弹层的显示隐藏
       productType: [], //工单类型，添加弹层需要
       dialogSetVisible: false,
-      dialogMoreVisible: false,
+      // dialogMoreVisible: false,
     };
   },
   components: {
@@ -138,10 +143,6 @@ export default {
     },
     onSet() {
       this.dialogSetVisible = true;
-    },
-    async onMore() {
-      this.dialogMoreVisible = true;
-      await taskInfo()
     },
     searchForm(formInline) {
       this.params.taskCode = formInline.number;

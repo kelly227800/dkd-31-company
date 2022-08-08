@@ -69,3 +69,5 @@ export function taskInfo(taskId) {
         url: '/task-service/task/taskInfo/'+taskId,
     })
 }
+
+

@@ -52,6 +52,8 @@
           :autosize="{ minRows: 4, maxRows: 8 }"
           placeholder="请输入备注（不超过40字）"
           v-model="params.desc"
+          maxlength="40"
+          show-word-limit
         >
         </el-input>
       </el-form-item>
