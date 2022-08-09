@@ -20,27 +20,31 @@
         :key="index"
       >
       </el-table-column>
-      <el-table-column label="操作">
-        <!-- <slot></slot> -->
+      <el-table-column prop="image" label="设备图片">
         <template slot-scope="scope">
-          <viewsButton @click="onMore(scope.row)" type="info"
-            >查看详情</viewsButton
-          >
-          <moreDialog
-            v-if="taskMore.taskStatusTypeEntity"
-            :visible.sync="dialogMoreVisible"
-            :taskMore="taskMore"
-          ></moreDialog>
+          <img
+            :src="scope.row.image"
+            width="22px"
+            height="22px"
+            style="border-radius: 50%"
+          />
         </template>
+      </el-table-column>
+      <el-table-column
+        :prop="item.prop"
+        :label="item.label"
+        v-for="item in tableFoot"
+        :key="item.label"
+      >
+      </el-table-column>
+      <el-table-column label="操作">
+        <slot name="operate"></slot>
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import moreDialog from "./moreDialog.vue";
-import viewsButton from "@/components/viewsButton";
-import { taskInfo } from "@/api/workOrder";
 export default {
   props: {
     getSearchList: {
@@ -51,20 +55,17 @@ export default {
       type: Array,
       default: [],
     },
+    tableFoot: {
+      type: Array,
+      default: [],
+    },
     getSearchInfo: {
       type: Object,
       default: {},
     },
   },
   data() {
-    return {
-      dialogMoreVisible: false,
-      taskMore: {},
-    };
-  },
-  components: {
-    moreDialog,
-    viewsButton,
+    return {};
   },
 
   created() {},
@@ -75,11 +76,6 @@ export default {
     },
     indexMethod(index) {
       return (this.getSearchInfo.pageIndex - 1) * 10 + index + 1;
-    },
-    async onMore(row) {
-      this.dialogMoreVisible = true;
-      this.taskMore = await taskInfo(row.taskId);
-      console.log(this.taskMore);
     },
   },
 };

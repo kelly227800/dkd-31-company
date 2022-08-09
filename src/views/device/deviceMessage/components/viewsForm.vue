@@ -3,6 +3,7 @@
     <el-table
       :data="getSearchList"
       style="width: 100%"
+      @selection-change="handleSelectionChange"
       highlight-current-row
       @current-change="handleCurrentChange"
       :header-cell-style="{
@@ -11,8 +12,7 @@
         fontWeight: '500',
       }"
     >
-      <el-table-column type="index" :index="indexMethod" label="序号">
-      </el-table-column>
+      <el-table-column type="selection"> </el-table-column>
       <el-table-column
         :prop="item.prop"
         :label="item.label"
@@ -21,26 +21,13 @@
       >
       </el-table-column>
       <el-table-column label="操作">
-        <!-- <slot></slot> -->
-        <template slot-scope="scope">
-          <viewsButton @click="onMore(scope.row)" type="info"
-            >查看详情</viewsButton
-          >
-          <moreDialog
-            v-if="taskMore.taskStatusTypeEntity"
-            :visible.sync="dialogMoreVisible"
-            :taskMore="taskMore"
-          ></moreDialog>
-        </template>
+        <slot></slot>
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import moreDialog from "./moreDialog.vue";
-import viewsButton from "@/components/viewsButton";
-import { taskInfo } from "@/api/workOrder";
 export default {
   props: {
     getSearchList: {
@@ -57,14 +44,7 @@ export default {
     },
   },
   data() {
-    return {
-      dialogMoreVisible: false,
-      taskMore: {},
-    };
-  },
-  components: {
-    moreDialog,
-    viewsButton,
+    return {};
   },
 
   created() {},
@@ -73,13 +53,8 @@ export default {
     handleCurrentChange(val) {
       this.currentRow = val;
     },
-    indexMethod(index) {
-      return (this.getSearchInfo.pageIndex - 1) * 10 + index + 1;
-    },
-    async onMore(row) {
-      this.dialogMoreVisible = true;
-      this.taskMore = await taskInfo(row.taskId);
-      console.log(this.taskMore);
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     },
   },
 };
