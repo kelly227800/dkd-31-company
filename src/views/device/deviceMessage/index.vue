@@ -128,7 +128,6 @@ export default {
     async allTaskStatus() {
       const resStatus = await allTaskStatus();
       this.allTaskStatusList = resStatus;
-      //   console.log(this.allTaskStatusList);
     },
     async allTask(pageIndex) {
       this.params.pageIndex = pageIndex;

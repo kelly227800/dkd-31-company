@@ -6,7 +6,7 @@
     @close="onclose"
     center
   >
-    <el-form ref="form" :model="forData" :rules="Rules">
+    <el-form ref="form" :model="forData" :rules="forDataRules">
       <el-form-item prop="name" label="型号名称" label-width="100px">
         <el-input
           type="text"
@@ -64,7 +64,7 @@
           placeholder="请输入"
         ></el-input-number>
       </el-form-item>
-      <el-form-item label="设备图片" label-width="100px">
+      <el-form-item label="设备图片" label-width="100px" prop="image">
         <el-upload
           class="avatar-uploader"
           action="https://jsonplaceholder.typicode.com/posts/"
@@ -72,7 +72,7 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <img v-if="forData.image" :src="forData.image" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
@@ -103,23 +103,52 @@ export default {
         typeId: "",
       },
       Title: "",
-      Rules: {
+      forDataRules: {
         name: [
           { required: true, message: "请输入", trigger: "change" },
           {
             validator: async (rule, value, callback) => {
-              const res = await gettypelistapi({
+              const forDatalist = await gettypelistapi({
                 pageIndex: 1,
                 pageSize: 999999999,
               });
-              console.log(res);
               let isrepeat;
-              if (this.formData.id) {
-                isrepeat = depts
-                  .filter((e) => e.id !== this.formData.id)
-                  .some((e) => e.code === value);
+              if (this.forData.model !== "") {
+                isrepeat = forDatalist.currentPageRecords
+                  .filter(
+                    (e) => e.typeId !== forDatalist.currentPageRecords.typeId
+                  )
+                  .some((e) => e.name === value);
               } else {
-                isrepeat = depts.some((e) => e.code === value);
+                isrepeat = forDatalist.currentPageRecords.some(
+                  (e) => e.name === value
+                );
+              }
+              isrepeat ? callback(new Error("已经有型号名称")) : callback();
+            },
+            trigger: "blur",
+          },
+        ],
+        model: [
+          { required: true, message: "请输入", trigger: "change" },
+          {
+            validator: async (rule, value, callback) => {
+              const forDatalist = await gettypelistapi({
+                pageIndex: 1,
+                pageSize: 999999999,
+              });
+              console.log(forDatalist);
+              let isrepeat;
+              if (this.forData.model !== "") {
+                isrepeat = forDatalist.currentPageRecords
+                  .filter(
+                    (e) => e.typeId !== forDatalist.currentPageRecords.typeId
+                  )
+                  .some((e) => e.model === value);
+              } else {
+                isrepeat = forDatalist.currentPageRecords.some(
+                  (e) => e.model === value
+                );
               }
               isrepeat
                 ? callback(new Error("已经有" + value + "这个编码了"))
@@ -128,12 +157,12 @@ export default {
             trigger: "blur",
           },
         ],
-        model: [{ required: true, message: "请输入", trigger: "change" }],
         vmRow: [{ required: true, message: "请输入", trigger: "change" }],
         vmCol: [{ required: true, message: "请输入", trigger: "change" }],
         channelMaxCapacity: [
           { required: true, message: "请输入", trigger: "change" },
         ],
+        image: [{ required: true, message: "请输入", trigger: "change" }],
       },
       imageUrl: "",
     };
@@ -149,7 +178,6 @@ export default {
   },
 
   created() {
-    console.log(this.currentRowitem);
     if (this.addorrevise) {
       this.forData.channelMaxCapacity = this.currentRowitem.channelMaxCapacity;
       this.forData.image = this.currentRowitem.image;
@@ -158,7 +186,6 @@ export default {
       this.forData.typeId = this.currentRowitem.typeId;
       this.forData.vmCol = this.currentRowitem.vmCol;
       this.forData.vmRow = this.currentRowitem.vmRow;
-      this.imageUrl = this.currentRowitem.image;
       this.Title = "修改设备类型";
     } else {
       this.Title = "新增设备类型";
@@ -167,31 +194,25 @@ export default {
 
   methods: {
     handleChange(val) {
-      console.log(val);
+      // console.log(val);
     },
     onclose() {
-      this.forData = {
-        name: "",
-        model: "",
-        vmRow: "",
-        vmCol: "",
-        channelMaxCapacity: "",
-      };
       this.$emit("update:dialogVisible", false);
+      this.$refs.form.resetFields();
     },
     async onyes() {
       await this.$refs.form.validate();
-      this.forData.image = this.imageUrl;
       if (this.addorrevise) {
         await reviseDevicetypeapi(this.forData);
       } else {
         await addDevicetypeapi(this.forData);
       }
       this.$emit("update:dialogVisible", false);
+      this.$message.success("操作成功");
       this.$emit("update");
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      this.forData.image = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type;

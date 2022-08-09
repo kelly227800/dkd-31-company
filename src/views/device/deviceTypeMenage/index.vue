@@ -124,15 +124,9 @@ export default {
 
   methods: {
     onAdd() {
-      console.log("新建");
+      // console.log("新建");
       this.currentRowitem = {};
       this.dialogVisible = true;
-    },
-    onSet() {
-      console.log("配置");
-    },
-    onMore() {
-      console.log("详情");
     },
     searchForm() {
       this.params.name = this.$refs.model.formInline.number;
