@@ -95,7 +95,7 @@ export default {
       dialogVisible: false,
       allTaskStatusList: [], //头部搜索框
       params: {
-        pageIndex: 0,
+        pageIndex: 1,
         pageSize: 10,
       },
       people: {},
@@ -139,8 +139,11 @@ export default {
     // 获取
     async getPeopleList() {
       // 当前自加 1
-      this.params.pageIndex++;
       // 把单独数组和的结构出来
+      this.params = {
+        pageIndex: 1,
+        pageSize: 10,
+      };
       const { currentPageRecords, ...people } = await searchPeopleList(
         this.params
       );
@@ -151,10 +154,15 @@ export default {
     },
     // 搜索人员
     async searchForm(val) {
-      console.log(1);
-      const params = { pageIndex: 0, pageSize: 10, userName: "" };
-      params.userName = val.number;
-      const { currentPageRecords, ...people } = await searchPeopleList(params);
+      // console.log(val);
+
+      this.params.userName = val.number;
+      if (this.params.userName == "") {
+        return this.getPeopleList();
+      }
+      const { currentPageRecords, ...people } = await searchPeopleList(
+        this.params
+      );
       // console.log(people);
       // console.log(currentPageRecords);
       this.PeopleList = currentPageRecords;
@@ -180,9 +188,17 @@ export default {
       this.people = people;
     },
     // 下一页
-    nextClick() {
+    async nextClick() {
       // console.log("下一页");
-      this.getPeopleList();
+      this.params.pageIndex++;
+      // 把单独数组和的结构出来
+      const { currentPageRecords, ...people } = await searchPeopleList(
+        this.params
+      );
+      // console.log(people);
+      // console.log(currentPageRecords);
+      this.PeopleList = currentPageRecords;
+      this.people = people;
     },
     // 修改
     handleClick(val) {

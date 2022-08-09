@@ -72,3 +72,26 @@ export const getUserWork = (params) => {
     params,
   });
 };
+
+/**
+ * 获取用户工作量(工单统计)
+ * @param {Object} params id和开始时间，结束时间
+ * @returns promise
+ */
+export const getWorkLoad = (params) => {
+  return request({
+    url: "/task-service/task/userWork",
+    params,
+  });
+};
+
+/**
+ * 查看用户详情
+ * @param {Number} id 用户Id
+ * @returns promise
+ */
+export const getUserInfo = (id) => {
+  return request({
+    url: `/user-service/user/${id}`,
+  });
+};

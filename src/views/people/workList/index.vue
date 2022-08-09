@@ -3,6 +3,7 @@
     <!-- 搜索栏 -->
     <ViewsSearch
       text1="人员搜索:"
+      text2="角色:"
       :allTaskStatusList="allTaskStatusList"
       @search="searchForm"
     ></ViewsSearch>
@@ -56,12 +57,21 @@
         </el-pagination>
       </div>
     </div>
+    <!-- 详情弹框 -->
+    <DetailsDialog
+      v-if="isShow"
+      :isShow.sync="isShow"
+      @update="isShow = false"
+      :userId="userId"
+    ></DetailsDialog>
   </div>
 </template>
 
 <script>
-import ViewsSearch from "@/components/viewsSearch";
+import ViewsSearch from "./Search/index.vue";
+import DetailsDialog from "./DetailsDialog/index.vue";
 import { getUserWork } from "@/api/people";
+
 export default {
   data() {
     return {
@@ -72,10 +82,7 @@ export default {
           prop: "userName",
           label: "人员名称",
         },
-        {
-          prop: "regionName",
-          label: "角色",
-        },
+
         {
           prop: "roleName",
           label: "角色",
@@ -97,15 +104,21 @@ export default {
           label: "拒绝工单",
         },
       ],
-      allTaskStatusList: [],
+      allTaskStatusList: [
+        { isRepair: true, statusName: "维修员" },
+        { isRepair: false, statusName: "运营员" },
+      ],
       params: {
-        pageIndex: 0,
+        pageIndex: 1,
         pageSize: 10,
       },
+      isShow: false,
+      userId: 0,
     };
   },
   components: {
     ViewsSearch,
+    DetailsDialog,
   },
   created() {
     this.getUserWork();
@@ -115,9 +128,13 @@ export default {
     // 人员工作量列表
     async getUserWork() {
       // 解构一下
-      this.params.pageIndex++;
+      // this.params.pageIndex++;
+      this.params = {
+        pageIndex: 1,
+        pageSize: 10,
+      };
       const { currentPageRecords, ...page } = await getUserWork(this.params);
-      console.log(currentPageRecords);
+      // console.log(currentPageRecords);
       // console.log(page);
       this.userWorkList = currentPageRecords;
       this.page = page;
@@ -126,24 +143,44 @@ export default {
       return (this.page.pageIndex - 1) * 10 + index + 1;
     },
     // 搜索
-    searchForm() {},
+    async searchForm(val) {
+      console.log(val);
+      if (val.userName == "" && val.isRepair == "") {
+        return this.getUserWork();
+      }
+      console.log(val);
+      this.params = val;
+      // this.params.pageIndex++;
+      const { currentPageRecords, ...page } = await getUserWork(this.params);
+      console.log(currentPageRecords);
+      this.userWorkList = currentPageRecords;
+      this.page = page;
+    },
     // 上一页
     async prevClick() {
       // 解构一下
       this.params.pageIndex--;
       const { currentPageRecords, ...page } = await getUserWork(this.params);
-      console.log(currentPageRecords);
+      // console.log(currentPageRecords);
       // console.log(page);
       this.userWorkList = currentPageRecords;
       this.page = page;
     },
     // 下一页
-    nextClick() {
-      this.getUserWork();
+    async nextClick() {
+      // 解构一下
+      this.params.pageIndex++;
+      const { currentPageRecords, ...page } = await getUserWork(this.params);
+      // console.log(currentPageRecords);
+      // console.log(page);
+      this.userWorkList = currentPageRecords;
+      this.page = page;
     },
     // 查看详情
     details(val) {
-      console.log(val);
+      // console.log(val.userId);
+      this.userId = val.userId;
+      this.isShow = true;
     },
   },
 };
