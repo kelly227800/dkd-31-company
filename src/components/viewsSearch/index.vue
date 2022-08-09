@@ -57,7 +57,8 @@ export default {
 
   methods: {
     clickSearch() {
-      console.log("查询");
+      // console.log(this.formInline.number);
+
       this.$emit("search", this.formInline);
     },
   },
