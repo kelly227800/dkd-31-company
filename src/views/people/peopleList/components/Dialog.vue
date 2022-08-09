@@ -52,10 +52,6 @@
           v-model="addFrom.regionId"
           placeholder="请选择"
         >
-          <!-- id: "1305439798119075841"
-name: "城北街道"
-nodeCount: 1
-remark: "城北街道" -->
           <el-option
             v-for="item in regionList"
             :key="item.id"
@@ -82,7 +78,7 @@ remark: "城北街道" -->
           />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           <div class="el-upload__tip" slot="tip">
-            只能上传jpg/png文件，且不超过500kb
+            只能上传jpg/png文件，且不超过100kb
           </div>
         </el-upload>
       </el-form-item>
