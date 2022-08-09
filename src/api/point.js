@@ -75,13 +75,124 @@ export function getDeleteList(id) {
 }
 
 /**
- * 区域列表
+ * 所属商圈
+ * @param {*} id 
+ * @returns 
+ */
+export function getBusinessTypeList(data) {
+    return request({
+        url: '/vm-service/businessType',
+        data
+    })
+}
+
+/**
+ * 合作商搜索
+ * @param {*} data 
+ * @returns 
+ */
+export function getPartnerList(params) {
+    return request({
+        url: '/user-service/partner/search',
+        params
+    })
+}
+
+/**
+ * 新增点位
  * @param {*} params 
  * @returns 
  */
-export function getAreaList(params) {
+export function getAddNodeList(data) {
     return request({
-        url: '/vm-service/region/search',
-        params
+        url: '/vm-service/node',
+        method:'POST',
+        data
+    })
+}
+
+/**
+ * 点位详情
+ * @param {*} params 
+ * @returns 
+ */
+ export function getNodeDetailsList(id) {
+    return request({
+        url: 'vm-service/node/vmList/'+id,
+    })
+}
+
+
+/**
+ * 
+ * 删除点位
+ * @param {*} data 
+ * @returns 
+ */
+ export function getDeleteNodeList(id) {
+    return request({
+        url: '/vm-service/node/'+id,
+        method: 'DELETE',
+    })
+}
+
+
+/**
+ * 
+ * 修改点位
+ * @param {*} data 
+ * @returns 
+ */
+ export function getChangeNodeList(id,data) {
+    return request({
+        url: '/vm-service/node/'+id,
+        method: 'PUT',
+        data
+    })
+}
+
+/**
+ * 
+ * 新增合作商
+ * @param {*} data 
+ * @returns 
+ */
+ export function getAddPartnerList(data) {
+    return request({
+        url: '/user-service/partner',
+        method: 'POST',
+        data
+    })
+}
+
+/**
+ * 删除合作商
+ * @param {*} data 
+ * @returns 
+ */
+export function getDeletePartnerList(id) {
+    return request({
+        url: '/user-service/partner/'+id,
+        method: 'DELETE',
+    })
+}
+
+/**
+ * 修改合作商
+ * @param {*} data 
+ * @returns 
+ */
+export function getChangPartnerList(id,data) {
+    return request({
+        url: '/user-service/partner/'+id,
+        method: 'PUT',
+        data
+    })
+}
+
+export function getPasswordList(id) {
+    return request({
+        url: '/user-service/partner/resetPwd/'+id,
+        method: 'PUT',
     })
 }

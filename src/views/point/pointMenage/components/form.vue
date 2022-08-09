@@ -29,7 +29,7 @@
               >查看详情</viewsButton
             >
             <viewsButton
-              @click.native="$emit('onChange', scope.row.id)"
+              @click.native="$emit('onChange', scope.row)"
               type="info"
               size="mini"
               >修改</viewsButton
@@ -50,7 +50,6 @@
 
 <script>
 import viewsButton from "@/components/viewsButton";
-import { getDetailsList } from "@/api/point";
 export default {
   props: {
     getSearchList: {
@@ -67,15 +66,7 @@ export default {
     },
   },
   data() {
-    return {
-      // taskMore: [],
-      // taskChange: "",
-      // params: {
-      //   pageIndex: 1,
-      //   pageSize: 10,
-      //   regionId: "",
-      // },
-    };
+    return {};
   },
   components: {
     viewsButton,
@@ -89,22 +80,6 @@ export default {
     },
     indexMethod(index) {
       return (this.getSearchInfo.pageIndex - 1) * 10 + index + 1;
-    },
-    async onMore(row) {
-      this.dialogMoreVisible = true;
-      // this.params.regionId = row.id;
-      // const res = await getDetailsList(this.params);
-      // this.taskMore = res.currentPageRecords;
-    },
-    async onChange(row) {
-      this.dialogChangeVisible = true;
-      // this.taskChange = row.id;
-      // this.$refs.changeDialog.taskChange(row.id);
-    },
-    async onDelete(row) {
-      this.deleteDialogVisible = true;
-      // this.taskMore = await taskInfo(row.taskId);
-      // console.log(this.taskMore);
     },
   },
 };

@@ -24,20 +24,28 @@
         <template slot-scope="scope">
           <div style="display: flex">
             <viewsButton
-              @click.native="$emit('onMore', scope.row.id)"
+              @click.native="$emit('onReset', scope.row.id)"
               type="info"
+              size="xx"
+              >重置密码</viewsButton
+            >
+            <viewsButton
+              @click.native="$emit('onMore', scope.row)"
+              type="info"
+              size="xx"
               >查看详情</viewsButton
             >
             <viewsButton
-              @click.native="$emit('onChange', scope.row.id)"
+              @click.native="$emit('onChange', scope.row)"
               type="info"
-              size="mini"
+              size="ll"
               >修改</viewsButton
             >
             <viewsButton
               @click.native="$emit('onDelete', scope.row.id)"
               type="info"
-              size="mini"
+              size="ll"
+              style="color: red"
               >删除</viewsButton
             >
           </div>
@@ -49,7 +57,6 @@
 
 <script>
 import viewsButton from "@/components/viewsButton";
-import { getDetailsList } from "@/api/point";
 export default {
   props: {
     getSearchList: {
@@ -66,15 +73,7 @@ export default {
     },
   },
   data() {
-    return {
-      // taskMore: [],
-      // taskChange: "",
-      // params: {
-      //   pageIndex: 1,
-      //   pageSize: 10,
-      //   regionId: "",
-      // },
-    };
+    return {};
   },
   components: {
     viewsButton,
@@ -88,22 +87,6 @@ export default {
     },
     indexMethod(index) {
       return (this.getSearchInfo.pageIndex - 1) * 10 + index + 1;
-    },
-    async onMore(row) {
-      this.dialogMoreVisible = true;
-      // this.params.regionId = row.id;
-      // const res = await getDetailsList(this.params);
-      // this.taskMore = res.currentPageRecords;
-    },
-    async onChange(row) {
-      this.dialogChangeVisible = true;
-      // this.taskChange = row.id;
-      // this.$refs.changeDialog.taskChange(row.id);
-    },
-    async onDelete(row) {
-      this.deleteDialogVisible = true;
-      // this.taskMore = await taskInfo(row.taskId);
-      // console.log(this.taskMore);
     },
   },
 };

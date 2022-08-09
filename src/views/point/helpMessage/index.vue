@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 上边的一行表格查询 -->
-    <viewsSearch text1="区域搜索" @search="searchForm"></viewsSearch>
+    <viewsSearch text1="合作商搜索" @search="searchForm"></viewsSearch>
     <!-- 下边的整个表格 -->
     <div class="result">
       <!-- 按钮 -->
@@ -22,6 +22,7 @@
         :getSearchList="getSearchList"
         :tableHead="tableHead"
         :getSearchInfo="getSearchInfo"
+        @onReset="onReset"
         @onMore="onMore"
         @onChange="onChange"
         @onDelete="onDelete"
@@ -43,15 +44,15 @@
       ref="changeDept"
       @addSave="allTask"
     ></changeDialog>
-    <!-- <deleteDialog
-      :visible.sync="dialogDeleteVisible"
-      ref="deleteDept"
-    ></deleteDialog> -->
   </div>
 </template>
 
 <script>
-import { getPointSearch, getDeleteList } from "@/api/point";
+import {
+  getPartnerList,
+  getDeletePartnerList,
+  getPasswordList,
+} from "@/api/point";
 import viewsSearch from "@/components/viewsSearch";
 import viewsForm from "./components/form";
 import viewsPage from "@/components/viewsPage";
@@ -60,7 +61,6 @@ import viewsButton from "@/components/viewsButton";
 import addDialog from "./components/addDialog";
 import moreDialog from "./components/moreDialog";
 import changeDialog from "./components/changeDialog";
-// import deleteDialog from "./components/deleteDialog";
 export default {
   name: "marketing",
   data() {
@@ -68,15 +68,27 @@ export default {
       tableHead: [
         {
           prop: "name",
-          label: "区域名称",
+          label: "合作商名称",
         },
         {
-          prop: "nodeCount",
-          label: "点位数",
+          prop: "account",
+          label: "账号",
         },
         {
-          prop: "remark",
-          label: "备注说明",
+          prop: "vmCount",
+          label: "设备数量",
+        },
+        {
+          prop: "ratio",
+          label: "分成比例",
+        },
+        {
+          prop: "contact",
+          label: "联系人",
+        },
+        {
+          prop: "mobile",
+          label: "联系电话",
         },
       ],
       getSearchList: [], //10条表格数据
@@ -85,13 +97,12 @@ export default {
       disabledDown: false, //下一页是否禁用
       params: {
         pageIndex: 1, //页码
+        pageSize: 10,
         name: "",
       },
       dialogAddVisible: false, //添加弹层的显示隐藏
       dialogMoreVisible: false,
       dialogChangeVisible: false,
-      // dialogDeleteVisible: false,
-      clickId: "",
     };
   },
   components: {
@@ -102,7 +113,6 @@ export default {
     addDialog,
     moreDialog,
     changeDialog,
-    // deleteDialog,
   },
 
   created() {
@@ -114,6 +124,22 @@ export default {
     onAdd() {
       this.dialogAddVisible = true;
     },
+    onReset(id) {
+      this.$confirm("确定要重置合作商密码吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          await getPasswordList(id);
+          this.allTask(1);
+          this.$message({
+            type: "success",
+            message: "重置成功!",
+          });
+        })
+        .catch(() => {});
+    },
     onMore(id) {
       this.dialogMoreVisible = true;
       this.$refs.moreDept.getDetailsList(id);
@@ -123,15 +149,13 @@ export default {
       this.$refs.changeDept.getChangeDetailsList(id);
     },
     onDelete(id) {
-      //   this.dialogDeleteVisible = true;
-      //   // this.$refs.deleteDept.
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(async () => {
-          await getDeleteList(id);
+          await getDeletePartnerList(id);
           this.allTask(1);
           this.$message({
             type: "success",
@@ -153,7 +177,7 @@ export default {
     },
     async allTask(pageIndex) {
       this.params.pageIndex = pageIndex;
-      const resSearch = await getPointSearch(this.params);
+      const resSearch = await getPartnerList(this.params);
       this.getSearchInfo = resSearch;
       this.getSearchList = resSearch.currentPageRecords;
       // 判断上一页和下一页的禁用情况

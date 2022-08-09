@@ -19,6 +19,7 @@
         <addDialog
           @addSave="allTask"
           :visible.sync="dialogAddVisible"
+          ref="addDept"
         ></addDialog>
       </div>
 
@@ -54,9 +55,8 @@
 <script>
 import {
   getPointSearch,
-  getDeleteList,
   getDetailsList,
-  getAreaList,
+  getDeleteNodeList
 } from "@/api/point";
 import viewsSearch from "./components/search";
 import viewsForm from "./components/form";
@@ -66,7 +66,6 @@ import viewsButton from "@/components/viewsButton";
 import addDialog from "./components/addDialog";
 import moreDialog from "./components/moreDialog";
 import changeDialog from "./components/changeDialog";
-// import deleteDialog from "./components/deleteDialog";
 export default {
   name: "marketing",
   data() {
@@ -100,6 +99,8 @@ export default {
       params: {
         pageIndex: 1, //页码
         pageSize: 10,
+        name: "",
+        regionId: "",
       },
       dialogAddVisible: false, //添加弹层的显示隐藏
       dialogMoreVisible: false,
@@ -116,18 +117,18 @@ export default {
     addDialog,
     moreDialog,
     changeDialog,
-    // deleteDialog,
   },
 
   created() {
     this.allTask(1);
-    this.getAreaList();
+    this.getPointSearch();
   },
 
   methods: {
     // 新建
     onAdd() {
       this.dialogAddVisible = true;
+      this.$refs.addDept.getAdd();
     },
     onMore(id) {
       this.dialogMoreVisible = true;
@@ -144,7 +145,7 @@ export default {
         type: "warning",
       })
         .then(async () => {
-          await getDeleteList(id);
+          await getDeleteNodeList(id);
           this.allTask(1);
           this.$message({
             type: "success",
@@ -162,10 +163,11 @@ export default {
     // 搜索
     searchForm(formInline) {
       this.params.name = formInline.number;
+      this.params.regionId = formInline.status;
       this.allTask(1);
     },
-    async getAreaList() {
-      const res = await getAreaList({
+    async getPointSearch() {
+      const res = await getPointSearch({
         pageIndex: 1,
         pageSize: 10000,
       });
