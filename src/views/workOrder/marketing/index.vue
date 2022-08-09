@@ -34,16 +34,6 @@
         :tableHead="tableHead"
         :getSearchInfo="getSearchInfo"
       >
-        <!-- <template v-slot="scope">
-          <viewsButton @click="onMore(scope.row)" type="info"
-            >查看详情</viewsButton
-          >
-        </template> -->
-        <!-- <viewsButton @click="onMore()" type="info">查看详情</viewsButton> -->
-        <!-- <moreDialog
-          @addSave="allTask"
-          :visible.sync="dialogMoreVisible"
-        ></moreDialog> -->
       </viewsForm>
       <!-- 分页 -->
       <viewsPage

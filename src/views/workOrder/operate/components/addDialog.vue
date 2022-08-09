@@ -132,7 +132,7 @@ export default {
     async onSave() {
       await this.$refs.params.validate();
       try {
-        const res = await getCreateList();
+        const res = await getCreateList(this.params);
         console.log(res);
         this.onClose();
         this.$emit("addSave");

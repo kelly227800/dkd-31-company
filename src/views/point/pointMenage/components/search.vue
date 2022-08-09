@@ -7,10 +7,10 @@
       <el-form-item :label="text2" v-if="text2 !== ''">
         <el-select v-model="formInline.status" placeholder="请选择">
           <el-option
-            :label="item.statusName"
-            :value="item.statusId"
+            :label="item.name"
+            :value="item.id"
             v-for="item in allTaskStatusList"
-            :key="item.statusId"
+            :key="item.id"
           ></el-option>
         </el-select>
       </el-form-item>
