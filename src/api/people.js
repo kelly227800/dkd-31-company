@@ -36,10 +36,39 @@ export const getRegionList = (params) => {
   });
 };
 
+/**
+ * 新增人员
+ * @param {Object} data 人员的所有信息
+ * @returns  promise
+ */
 export const addUser = (data) => {
   return request({
     url: "/user-service/user",
     method: "POST",
     data,
+  });
+};
+
+/**
+ * 删除人员
+ * @param {Number} id  用户的id
+ * @returns promise
+ */
+export const delPersonnel = (id) => {
+  return request({
+    url: `/user-service/user/${id}`,
+    method: "DELETE",
+  });
+};
+
+/**
+ * 人员工作量列表
+ * @param {*} params 工作量列表数量
+ * @returns  promise
+ */
+export const getUserWork = (params) => {
+  return request({
+    url: "/user-service/user/searchUserWork",
+    params,
   });
 };
