@@ -202,14 +202,11 @@ export default {
       } else {
         this.disabledDown = false;
       }
-      // console.log(this.getSearchList);
       this.changeFormat(this.getSearchList);
     },
     // 对获取的数据进行格式修改
     changeFormat(getSearchList) {
-      // console.log(getSearchList);
       this.getSearchList = getSearchList.map((value, index, array) => {
-        // console.log(value.createType);
         if (value.createType === 1) {
           value.createType = "手动";
         } else {

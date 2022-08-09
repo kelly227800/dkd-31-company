@@ -62,3 +62,56 @@ export function addDevicetypeapi(data) {
     data,
   });
 }
+export function getPointsSearchapi(params) {
+  return request({
+    url: "/vm-service/node/search",
+    params,
+  });
+}
+export function addvendingmachineapi(data) {
+  return request({
+    url: "/vm-service/vm",
+    method: "POST",
+    data,
+  });
+}
+export function revisevendingmachineapi(id, nodeId) {
+  return request({
+    url: "/vm-service/vm/" + id + "/" + nodeId,
+    method: "PUT",
+  });
+}
+export function gettacticslistapi(data) {
+  return request({
+    url: "/vm-service/policy",
+    data,
+  });
+}
+export function getInquiretacticsapi(innerCode) {
+  return request({
+    url: "/vm-service/policy/vmPolicy/" + innerCode,
+  });
+}
+export function Canceltacticsapi(innerCode, policyId) {
+  return request({
+    url: "/vm-service/vm/cancelPolicy/" + innerCode + "/" + policyId,
+    method: "PUT",
+  });
+}
+export function applytacticsapi(data) {
+  return request({
+    url: "/vm-service/vm/applyPolicy",
+    method: "PUT",
+    data,
+  });
+}
+export function getCargolanesdeitapi(innerCode) {
+  return request({
+    url: "/vm-service/channel/channelList/" + innerCode,
+  });
+}
+export function getCargolanestypedeitapi(typeId) {
+  return request({
+    url: "/vm-service/vmType/" + typeId,
+  });
+}

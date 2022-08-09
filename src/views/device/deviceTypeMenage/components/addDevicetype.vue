@@ -7,7 +7,7 @@
     center
   >
     <el-form ref="form" :model="forData" :rules="forDataRules">
-      <el-form-item prop="name" label="型号名称" label-width="100px">
+      <el-form-item prop="name" label="型号名称:" label-width="100px">
         <el-input
           type="text"
           placeholder="请输入"
@@ -16,7 +16,7 @@
           show-word-limit
         ></el-input>
       </el-form-item>
-      <el-form-item prop="model" label="型号编码" label-width="100px">
+      <el-form-item prop="model" label="型号编码:" label-width="100px">
         <el-input
           type="text"
           placeholder="请输入  (限制数字、字母、中划线、下划线)"
@@ -27,7 +27,7 @@
       </el-form-item>
       <el-form-item
         prop="vmRow"
-        label="货道行数"
+        label="货道行数:"
         label-width="100px"
         style="width: 100%"
       >
@@ -40,7 +40,7 @@
           :max="10"
         ></el-input-number>
       </el-form-item>
-      <el-form-item prop="vmCol" label="货道列数" label-width="100px">
+      <el-form-item prop="vmCol" label="货道列数:" label-width="100px">
         <el-input-number
           style="width: 100%"
           v-model="forData.vmCol"
@@ -52,7 +52,7 @@
       </el-form-item>
       <el-form-item
         prop="channelMaxCapacity"
-        label="货道容量"
+        label="货道容量:"
         label-width="100px"
       >
         <el-input-number
@@ -64,7 +64,7 @@
           placeholder="请输入"
         ></el-input-number>
       </el-form-item>
-      <el-form-item label="设备图片" label-width="100px" prop="image">
+      <el-form-item label="设备图片:" label-width="100px" prop="image">
         <el-upload
           class="avatar-uploader"
           action="https://jsonplaceholder.typicode.com/posts/"
@@ -207,7 +207,7 @@ export default {
       } else {
         await addDevicetypeapi(this.forData);
       }
-      this.$emit("update:dialogVisible", false);
+      this.onclose();
       this.$message.success("操作成功");
       this.$emit("update");
     },
