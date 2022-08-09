@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { regionData } from "element-china-area-data";
+import { regionData, CodeToText } from "element-china-area-data";
 import viewsButton from "@/components/viewsButton";
 import {
   getPointSearch,
@@ -130,6 +130,7 @@ export default {
       ownerList: [], //合作商
       options: regionData,
       selectedOptions: [],
+      code: [],
     };
   },
   components: {
@@ -137,7 +138,7 @@ export default {
   },
   methods: {
     handleChange(value) {
-      console.log(value);
+      this.code = value;
       this.params.areaCode = value[2];
     },
     async getAdd() {
@@ -175,9 +176,12 @@ export default {
     async onSave() {
       await this.$refs.params.validate();
       try {
-        console.log(1);
-        const res = await getAddNodeList(this.params);
-        console.log(res);
+        const x1 = CodeToText[this.code[0]];
+        const x2 = CodeToText[this.code[1]];
+        const x3 = CodeToText[this.code[2]];
+        const area = x1 + "-" + x2 + "-" + x3 + "-" + this.params.addr;
+        this.params.addr = area;
+        await getAddNodeList(this.params);
         this.onClose();
         this.$emit("addSave", 1);
       } catch (err) {
