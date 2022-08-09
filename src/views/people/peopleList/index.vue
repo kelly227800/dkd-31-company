@@ -1,68 +1,105 @@
 <template>
   <div>
-    <!-- 上边的一行表格查询 -->
-    <viewsSearch
-      text1="人员搜索"
+    <!-- 搜索栏 -->
+    <ViewsSearch
+      text1="人员搜索:"
       :allTaskStatusList="allTaskStatusList"
       @search="searchForm"
-    ></viewsSearch>
-    <!-- 下边的整个表格 -->
+    ></ViewsSearch>
+    <!-- 下面的整个表格 -->
     <div class="result">
       <!-- 按钮 -->
       <div class="bottom_button">
-        <viewsButton @click="onAdd" type="success">
+        <ViewsButton @click="onAdd" type="success">
           <i class="el-icon-circle-plus-outline"></i>
           新建
-        </viewsButton>
+        </ViewsButton>
       </div>
-      <!-- 表格 -->
-      <viewsForm
-        :getSearchList="getSearchList"
-        :tableHead="tableHead"
-        :getSearchInfo="getSearchInfo"
-      >
-        <div style="display: flex; background: transparent">
-          <viewsButton style="background: transparent" type="info"
-            >修改</viewsButton
+      <!-- 表格部分 -->
+      <div class="bottom_form">
+        <el-table
+          :data="PeopleList"
+          style="width: 100%"
+          highlight-current-row
+          :header-cell-style="{
+            background: 'rgb(243, 246, 251)',
+            color: 'rgb(102, 102, 102)',
+            fontWeight: '500',
+          }"
+        >
+          <el-table-column type="index" :index="indexMethod" label="序号">
+          </el-table-column>
+          <el-table-column
+            :prop="item.prop"
+            :label="item.label"
+            v-for="(item, index) in tableHead"
+            :key="index"
           >
-          <viewsButton
-            style="background: transparent; color: red"
-            type="info"
-            @click="delFn()"
-            >删除</viewsButton
-          >
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                @click="handleClick(scope.row)"
+                type="text"
+                size="small"
+                >修改</el-button
+              >
+              <el-button
+                style="color: red"
+                type="text"
+                size="small"
+                @click="delFn(scope.row)"
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <!-- 底部导航 -->
+      <div class="pagination-container">
+        <div>
+          共 {{ people.totalCount }} 条记录&nbsp;&nbsp; 第
+          {{ people.pageIndex }} / {{ people.totalPage }} 页
         </div>
-      </viewsForm>
-      <!-- 分页 -->
-      <viewsPage
-        :getSearchInfo="getSearchInfo"
-        @pageIndex="allTask"
-        :disabledUp="disabledUp"
-        :disabledDown="disabledDown"
-      ></viewsPage>
+        <el-pagination
+          layout="prev,next"
+          :small="false"
+          prev-text="上一页"
+          next-text="下一页"
+          @prev-click="prevClick"
+          @next-click="nextClick"
+          :total="Number(people.totalCount)"
+        >
+        </el-pagination>
+      </div>
     </div>
-
     <!-- 新增人员弹框 -->
-    <el-dialog title="新增工单" :visible.sync="addIsShow" width="620px" center>
-      <Dialog></Dialog>
-    </el-dialog>
+
+    <Dialog
+      :PeopleList="PeopleList"
+      :dialogVisible.sync="dialogVisible"
+      :Personnel="Personnel"
+    ></Dialog>
   </div>
 </template>
 
 <script>
-import moment from "moment";
-import { allTaskStatus, getSearch } from "@/api/workOrder";
-import viewsSearch from "@/components/viewsSearch";
-import viewsForm from "@/components/viewsForm";
-import viewsPage from "@/components/viewsPage";
-import viewsButton from "@/components/viewsButton";
+import ViewsSearch from "@/components/viewsSearch";
+import ViewsButton from "@/components/viewsButton";
 import Dialog from "./components/Dialog.vue";
-//
-import { searchPeopleList } from "@/api/people";
+// Api
+import { searchPeopleList, delPersonnel } from "@/api/people";
 export default {
-  name: "marketing",
   data() {
     return {
+      dialogVisible: false,
+      allTaskStatusList: [], //头部搜索框
+      params: {
+        pageIndex: 1,
+        pageSize: 10,
+      },
+      people: {},
+      PeopleList: [],
       tableHead: [
         {
           prop: "userName",
@@ -81,96 +118,109 @@ export default {
           label: "联系电话",
         },
       ],
-      allTaskStatusList: [],
-      getSearchList: [],
-      getSearchInfo: {},
-      disabledUp: false,
-      disabledDown: false,
-      params: {
-        pageIndex: 1,
-        number: "",
-        status: "",
-      },
-      addIsShow: false,
+      Personnel: {},
     };
   },
   components: {
-    viewsSearch,
-    viewsForm,
-    viewsPage,
-    viewsButton,
+    ViewsSearch,
+    ViewsButton,
     Dialog,
   },
 
   created() {
-    this.allTaskStatus();
-    this.allTask(1);
+    this.getPeopleList();
   },
 
   methods: {
+    // 序号排列
+    indexMethod(index) {
+      return (this.people.pageIndex - 1) * 10 + index + 1;
+    },
+    // 获取
+    async getPeopleList() {
+      // 当前自加 1
+      // 把单独数组和的结构出来
+      this.params = {
+        pageIndex: 1,
+        pageSize: 10,
+      };
+      const { currentPageRecords, ...people } = await searchPeopleList(
+        this.params
+      );
+      // console.log(people);
+      console.log(currentPageRecords);
+      this.PeopleList = currentPageRecords;
+      this.people = people;
+    },
+    // 搜索人员
+    async searchForm(val) {
+      // console.log(val);
+
+      this.params.userName = val.number;
+      if (this.params.userName == "") {
+        return this.getPeopleList();
+      }
+      const { currentPageRecords, ...people } = await searchPeopleList(
+        this.params
+      );
+      // console.log(people);
+      // console.log(currentPageRecords);
+      this.PeopleList = currentPageRecords;
+      this.people = people;
+    },
+    // 新增人员
     onAdd() {
       console.log("新建");
-      this.addIsShow = true;
+      this.dialogVisible = true;
     },
-    onSet() {
-      console.log("配置");
+    // 上一页
+    async prevClick() {
+      // console.log("上一页");
+      // 当前自加 1
+      this.params.pageIndex--;
+      // 把单独数组和的结构出来
+      const { currentPageRecords, ...people } = await searchPeopleList(
+        this.params
+      );
+      // console.log(people);
+      // console.log(currentPageRecords);
+      this.PeopleList = currentPageRecords;
+      this.people = people;
     },
-    onMore() {
-      console.log("详情");
+    // 下一页
+    async nextClick() {
+      // console.log("下一页");
+      this.params.pageIndex++;
+      // 把单独数组和的结构出来
+      const { currentPageRecords, ...people } = await searchPeopleList(
+        this.params
+      );
+      // console.log(people);
+      // console.log(currentPageRecords);
+      this.PeopleList = currentPageRecords;
+      this.people = people;
     },
-    // 查询
-    searchForm(formInline) {
-      console.log(2);
-      this.params.number = formInline.number;
-      this.params.status = formInline.status;
-      this.allTask(1);
-    },
-    // 初始获取页面内容
-    async allTaskStatus() {
-      const resStatus = await allTaskStatus();
-      this.allTaskStatusList = resStatus;
-      //   console.log(this.allTaskStatusList);
-    },
-    async allTask(pageIndex) {
-      // console.log(pageIndex);
-      // console.log(this.$refs.searchForm.formInline);
-      this.params.pageIndex = pageIndex;
-      // console.log(this.params);
-      const resSearch = await searchPeopleList(this.params);
-      console.log(resSearch);
-      this.getSearchInfo = resSearch;
-      this.getSearchList = resSearch.currentPageRecords;
-      if (resSearch.pageIndex == 1) {
-        this.disabledUp = true;
-      } else {
-        this.disabledUp = false;
-      }
-      if (resSearch.pageIndex == resSearch.totalPage) {
-        this.disabledDown = true;
-      } else {
-        this.disabledDown = false;
-      }
-      // console.log(this.getSearchList);
-      this.changeFormat(this.getSearchList);
-    },
-    // 对获取的数据进行格式修改
-    changeFormat(getSearchList) {
-      // console.log(getSearchList);
-      this.getSearchList = getSearchList.map((value, index, array) => {
-        // console.log(value.createType);
-        if (value.createType === 1) {
-          value.createType = "手动";
-        } else {
-          value.createType = "自动";
-        }
-        value.createTime = moment(value.createTime).format(
-          "YYYY-MM-DD HH:mm:ss"
-        );
-        return value;
-      });
-    },
-    delFn(val) {
+    // 修改
+    handleClick(val) {
       console.log(val);
+      this.Personnel = val;
+      this.dialogVisible = true;
+    },
+    // 删除人员
+    async delFn(val) {
+      try {
+        await delPersonnel(val.id);
+        // 把单独数组和的结构出来
+        this.params = { pageIndex: 1, pageSize: 10 };
+        const { currentPageRecords, ...people } = await searchPeopleList(
+          this.params
+        );
+        this.PeopleList = currentPageRecords;
+        this.people = people;
+        this.$message.success("删除成功");
+      } catch (error) {
+        this.$message.error("删除失败");
+      }
     },
   },
 };
@@ -187,8 +237,30 @@ export default {
   .el-table_1_column_6 {
     .buttons {
       // display: flex;
+
       .info {
         background: transparent;
+      }
+    }
+  }
+  .pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 32px 16px;
+    span {
+      font-size: 12px;
+      color: #999;
+      flex: 10;
+    }
+    ::v-deep .el-pagination {
+      .btn-next {
+        background-color: #d5ddf8;
+        margin-left: 30px;
+      }
+      .btn-prev {
+        background-color: #d5ddf8;
       }
     }
   }
