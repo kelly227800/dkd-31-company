@@ -186,7 +186,6 @@
 
 <script>
 import viewsButton from "@/components/viewsButton";
-// import { autoSupplyConfig } from "@/api/workOrder";
 export default {
   props: {
     visible: {
