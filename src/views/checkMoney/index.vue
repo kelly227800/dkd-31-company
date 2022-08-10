@@ -72,8 +72,8 @@
             <el-select v-model="formInline.status" placeholder="请选择">
               <el-option
                 :label="item"
-                :value="formInline.status"
-                v-for="item in formInline.status"
+                :value="item"
+                v-for="item in statuslist"
                 :key="item"
               ></el-option>
             </el-select>
@@ -149,6 +149,7 @@ export default {
           end: "2022-08-09 23:59:59",
         },
       },
+      statuslist: [],
 
       tableHead: [
         {
@@ -231,7 +232,7 @@ export default {
         this.ownerNameList.push(item.ownerName);
       });
 
-      this.formInline.status = new Set(this.ownerNameList);
+      this.statuslist = Array.from(new Set(this.ownerNameList));
 
       // console.log(this.formInline);
     },
