@@ -17,13 +17,8 @@ import "@/permission"; // permission control
 import * as directives from "@/directives";
 
 import moment from "moment";
-<<<<<<< HEAD
 
 Vue.prototype.$moment = moment;
-
-=======
-Vue.prototype.$moment = moment;
->>>>>>> 47f76e8df6ad36f5238e301e88388eeacbbb5eb0
 moment.locale("zh-cn");
 // 引入echarts
 import echarts from "echarts";
@@ -43,11 +38,8 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // set ElementUI lang to EN
-<<<<<<< HEAD
 Vue.use(ElementUI, { locale });
-=======
 // Vue.use(ElementUI, { locale });
->>>>>>> 47f76e8df6ad36f5238e301e88388eeacbbb5eb0
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI);
 

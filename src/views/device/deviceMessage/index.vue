@@ -15,9 +15,7 @@
           <i class="el-icon-circle-plus-outline"></i>
           新建
         </viewsButton>
-        <NewlyBuilt
-          :centerDialogVisible.sync="centerDialogVisible"
-        ></NewlyBuilt>
+
         <viewsButton @click="onSet" type="warning">批量操作</viewsButton>
       </div>
       <!-- 表格 -->
@@ -41,18 +39,67 @@
         :disabledDown="disabledDown"
       ></viewsPage>
     </div>
+    <NewlyBuilt
+      v-if="centerDialogVisible"
+      :centerDialogVisible.sync="centerDialogVisible"
+      :currentPageRecordslist="currentPageRecordslist"
+      :PointscurrentPageRecordslist="PointscurrentPageRecordslist"
+      @update="allTask(1)"
+    ></NewlyBuilt>
+    <Revise
+      v-if="revisedialogVisible"
+      :revisedialogVisible.sync="revisedialogVisible"
+      :revisecurrentPageRecordslist="revisecurrentPageRecordslist"
+      :revisecurrentRow="revisecurrentRow"
+      @update="allTask(1)"
+    ></Revise>
+    <Tactics
+      v-if="tacticsdialogVisible"
+      :tacticsdialogVisible.sync="tacticsdialogVisible"
+      :tacticsdialogVisibleitem="tacticsdialogVisibleitem"
+      :tacticsdialogVisibleitemid="tacticsdialogVisibleitemid"
+      @update="allTask(1)"
+    ></Tactics>
+    <Firesword
+      v-if="FiresworddialogVisible"
+      :FiresworddialogVisible.sync="FiresworddialogVisible"
+      :Cargolanesdeitlist="Cargolanesdeitlist"
+      :Cargolanestypedei="Cargolanestypedei"
+      @del="del"
+      @imgfn="imgfn"
+      @Intelligentstocking="Intelligentstocking"
+      @Cargolaneconfiguration="Cargolaneconfiguration"
+    ></Firesword>
+    <Bulkconfiguration
+      v-if="batchdialogVisible"
+      :batchdialogVisible.sync="batchdialogVisible"
+      :batchdialogVisiblelist="batchdialogVisiblelist"
+      @update="allTask(1)"
+    ></Bulkconfiguration>
   </div>
 </template>
 
 <script>
 import moment from "moment";
 import { allTaskStatus } from "@/api/workOrder";
-import { getequipmentlistapi } from "@/api/device";
+import {
+  getequipmentlistapi,
+  gettypelistapi,
+  getPointsSearchapi,
+  getInquiretacticsapi,
+  getCargolanesdeitapi,
+  getCargolanestypedeitapi,
+  Cargolaneconfigurationapi,
+} from "@/api/device";
 import viewsSearch from "@/components/viewsSearch";
 import viewsForm from "./components/viewsForm.vue";
 import viewsPage from "@/components/viewsPage";
 import viewsButton from "@/components/viewsButton";
 import NewlyBuilt from "./components/NewlyBuilt.vue";
+import Revise from "./components/revise.vue";
+import Tactics from "./components/tactics.vue";
+import Firesword from "./components/Firesword.vue";
+import Bulkconfiguration from "./components/Bulkconfiguration.vue";
 export default {
   name: "marketing",
   data() {
@@ -94,6 +141,19 @@ export default {
         status: "",
       },
       centerDialogVisible: false,
+      currentPageRecordslist: [],
+      PointscurrentPageRecordslist: [],
+      revisedialogVisible: false,
+      revisecurrentPageRecordslist: [],
+      revisecurrentRow: {},
+      tacticsdialogVisible: false,
+      tacticsdialogVisibleitem: {},
+      tacticsdialogVisibleitemid: {},
+      FiresworddialogVisible: false,
+      batchdialogVisible: false,
+      batchdialogVisiblelist: [],
+      Cargolanesdeitlist: [],
+      Cargolanestypedei: {},
     };
   },
   components: {
@@ -102,6 +162,10 @@ export default {
     viewsPage,
     viewsButton,
     NewlyBuilt,
+    Revise,
+    Tactics,
+    Firesword,
+    Bulkconfiguration,
   },
 
   created() {
@@ -110,15 +174,31 @@ export default {
   },
 
   methods: {
-    onAdd() {
-      console.log("新建");
+    async onAdd() {
+      // console.log("新建");
+      const { currentPageRecords } = await gettypelistapi({
+        pageIndex: 1,
+        pageSize: 99999999,
+      });
+      this.currentPageRecordslist = currentPageRecords;
+      const { currentPageRecords: PointscurrentPageRecords } =
+        await getPointsSearchapi({
+          pageIndex: 1,
+          pageSize: 99999999,
+        });
+      this.PointscurrentPageRecordslist = PointscurrentPageRecords;
       this.centerDialogVisible = true;
     },
     onSet() {
-      console.log("配置");
-    },
-    onMore() {
-      console.log("详情");
+      // console.log("批量配置");
+      if (this.$refs.form.multipleSelection) {
+        setTimeout(() => {
+          this.batchdialogVisiblelist = this.$refs.form.multipleSelection;
+          this.batchdialogVisible = true;
+        });
+      } else {
+        this.$message.error("请先勾选售货机");
+      }
     },
     searchForm() {
       this.params.innerCode = this.$refs.search.formInline.number;
@@ -128,11 +208,9 @@ export default {
     async allTaskStatus() {
       const resStatus = await allTaskStatus();
       this.allTaskStatusList = resStatus;
-      //   console.log(this.allTaskStatusList);
     },
     async allTask(pageIndex) {
       this.params.pageIndex = pageIndex;
-      console.log(this.params);
       const resSearch = await getequipmentlistapi(this.params);
       this.getSearchInfo = resSearch;
       this.getSearchList = resSearch.currentPageRecords;
@@ -176,9 +254,79 @@ export default {
         return value;
       });
     },
-    cargolanesfn() {},
-    tacticsfn() {},
-    revisefn() {},
+    cargolanesfn() {
+      setTimeout(async () => {
+        this.Cargolanesdeitlist = await getCargolanesdeitapi(
+          this.$refs.form.currentRow.innerCode
+        );
+        this.Cargolanestypedei = await getCargolanestypedeitapi(
+          this.$refs.form.currentRow.type.typeId
+        );
+        this.FiresworddialogVisible = true;
+      });
+    },
+    tacticsfn() {
+      setTimeout(async () => {
+        this.tacticsdialogVisibleitemid = this.$refs.form.currentRow;
+        this.tacticsdialogVisibleitem = await getInquiretacticsapi(
+          this.$refs.form.currentRow.innerCode
+        );
+        this.tacticsdialogVisible = true;
+      });
+    },
+    revisefn() {
+      setTimeout(async () => {
+        this.revisecurrentRow = this.$refs.form.currentRow;
+        const { currentPageRecords: revisecurrentPageRecords } =
+          await getPointsSearchapi({
+            pageIndex: 1,
+            pageSize: 99999999,
+          });
+        this.revisecurrentPageRecordslist = revisecurrentPageRecords;
+        this.revisedialogVisible = true;
+      });
+    },
+    del(id) {
+      const index = this.Cargolanesdeitlist.findIndex(
+        (e) => e.channelId === id
+      );
+      this.Cargolanesdeitlist[index].sku.skuImage =
+        "http://likede2-java.itheima.net/image/logo.595745bd.png";
+    },
+    imgfn(id, img) {
+      const index = this.Cargolanesdeitlist.findIndex(
+        (e) => e.channelId === id
+      );
+      this.Cargolanesdeitlist[index].sku = {};
+      this.Cargolanesdeitlist[index].sku.skuImage = img.skuImage;
+      this.Cargolanesdeitlist[index].sku.brandName = img.skuName;
+    },
+    Intelligentstocking(list) {
+      let index = 0;
+      list.forEach((e) => {
+        this.Cargolanesdeitlist[index].sku = {};  
+        this.Cargolanesdeitlist[index].sku.skuImage = e.image;
+        this.Cargolanesdeitlist[index].sku.brandName = e.skuName;
+        index++;
+      });
+      this.Cargolanesdeitlist;
+    },
+    Cargolaneconfiguration() {
+      setTimeout(async () => {
+        let arr = [];
+        this.Cargolanesdeitlist.forEach((e) => {
+          arr.push({
+            channelCode: e.channelCode,
+            skuId: e.skuId,
+          });
+        });
+        await Cargolaneconfigurationapi({
+          innerCode: this.$refs.form.currentRow.innerCode,
+          channelList: arr,
+        });
+        this.allTask(1);
+      });
+    },
   },
 };
 </script>
