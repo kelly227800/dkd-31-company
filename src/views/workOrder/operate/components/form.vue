@@ -79,7 +79,6 @@ export default {
     async onMore(row) {
       this.dialogMoreVisible = true;
       this.taskMore = await taskInfo(row.taskId);
-      console.log(this.taskMore);
     },
   },
 };

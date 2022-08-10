@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination">
+  <div class="pagination" v-if="getSearchInfo">
     <div>
       共{{ getSearchInfo.totalCount }}条记录&nbsp;&nbsp;第{{
         getSearchInfo.pageIndex
@@ -27,6 +27,7 @@
 <script>
 import viewsButton from "@/components/viewsButton";
 export default {
+  name: "page",
   components: {
     viewsButton,
   },
@@ -47,7 +48,9 @@ export default {
   data() {
     return {};
   },
+
   created() {},
+
   methods: {
     onPageUp() {
       const pageIndex = --this.getSearchInfo.pageIndex;

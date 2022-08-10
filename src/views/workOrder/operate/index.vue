@@ -142,11 +142,21 @@ export default {
       const resSearch = await getSearch(this.params);
       this.getSearchInfo = resSearch;
       this.getSearchList = resSearch.currentPageRecords;
+      // console.log(this.getSearchList);
       // 筛选出所有的工单类型，得到数组对象
-      this.productType = this.getSearchList.map((value) => {
+      const type = this.getSearchList.map((value) => {
         return value.taskType;
       });
-      this.productType = this.unique(this.productType, "typeId");
+      const noRepetitionTaskType = [];
+      type.filter((value) => {
+        if (value) {
+          const flag = noRepetitionTaskType.indexOf(value.typeId);
+          if (flag === -1) {
+            noRepetitionTaskType.push(value.typeId);
+            this.productType.push(value);
+          }
+        }
+      });
       // 判断上一页和下一页的禁用情况
       if (resSearch.pageIndex == 1) {
         this.disabledUp = true;

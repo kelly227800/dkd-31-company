@@ -17,10 +17,17 @@
     "axios": "0.18.1",
     "core-js": "^3.24.1",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "element-china-area-data": "^5.0.2",
 =======
     "echarts": "^5.3.3",
 >>>>>>> people/peopleList
+=======
+    "dayjs": "^1.11.4",
+=======
+    "element-china-area-data": "^5.0.2",
+>>>>>>> 47f76e8df6ad36f5238e301e88388eeacbbb5eb0
+>>>>>>> a3e82217be419e1ac018da7f6a036a116841aeba
     "element-ui": "2.13.2",
     "js-cookie": "2.2.0",
     "moment": "^2.29.4",

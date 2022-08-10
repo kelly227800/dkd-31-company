@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { regionData } from "element-china-area-data";
+import { regionData, TextToCode } from "element-china-area-data";
 import viewsButton from "@/components/viewsButton";
 import {
   getPointSearch,
@@ -143,14 +143,18 @@ export default {
     },
     // 数据回显
     async getChangeDetailsList(id) {
-      this.clickId = id.id;
-      this.params.name = id.name;
-      this.params.regionId = id.regionId;
-      this.params.businessId = id.businessType.id;
-      this.params.businessName = id.businessType.name;
+      console.log(id);
+      this.clickId = id.id; //请求需要用
+      this.params.name = id.name; //点位名称
+      this.params.regionId = id.regionId; //所属区域
+      this.params.businessId = id.businessType.id; //所属商圈
       this.params.ownerId = id.ownerId;
-      this.params.addr = id.addr;
+      this.params.ownerName = id.ownerName;
+      this.params.addr = id.addrChange; //详细地址
       this.getAdd();
+      // 回显城市
+      this.changeCity(id.addr);
+      console.log(this.params.areaCode);
     },
     // 下拉选项
     async getAdd() {
@@ -195,8 +199,32 @@ export default {
         this.$message.error("修改失败");
       }
     },
+    // 选择合作商的时候，根据id得到名字
     change(id) {
       this.params.ownerName = this.ownerList.find((ele) => ele.id === id).name;
+    },
+    // 修改城市回显
+    changeCity(area) {
+      console.log(area);
+      const index = area.lastIndexOf("-");
+      console.log(index);
+      if (index === -1) return;
+      const xx = area.slice(0, index);
+      console.log(xx);
+      const yy = xx.split("-");
+      console.log(yy);
+      const y0 = yy[0];
+      const y1 = yy[1];
+      const y2 = yy[2];
+      console.log(y0, y1, y2);
+      const zz = [];
+      zz.push(
+        TextToCode[y0]?.code,
+        TextToCode[y0][y1]?.code,
+        TextToCode[y0][y1][y2]?.code
+      );
+      console.log(zz);
+      this.params.areaCode = zz;
     },
   },
 };

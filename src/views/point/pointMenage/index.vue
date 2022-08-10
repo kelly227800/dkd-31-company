@@ -53,11 +53,7 @@
 </template>
 
 <script>
-import {
-  getPointSearch,
-  getDetailsList,
-  getDeleteNodeList
-} from "@/api/point";
+import { getPointSearch, getDetailsList, getDeleteNodeList } from "@/api/point";
 import viewsSearch from "./components/search";
 import viewsForm from "./components/form";
 import viewsPage from "@/components/viewsPage";
@@ -88,7 +84,7 @@ export default {
           label: "合作商",
         },
         {
-          prop: "addr",
+          prop: "addrChange",
           label: "详细地址",
         },
       ],
@@ -179,7 +175,8 @@ export default {
       this.getSearchInfo = resSearch;
       this.getSearchList = resSearch.currentPageRecords;
       this.getSearchList.filter((value) => {
-        value.addr = value.addr.split("-")[value.addr.split("-").length - 1];
+        value.addrChange =
+          value.addr.split("-")[value.addr.split("-").length - 1];
       });
       // 判断上一页和下一页的禁用情况
       if (resSearch.pageIndex == 1) {

@@ -5,14 +5,14 @@
         <el-input v-model="formInline.number" placeholder="请输入"></el-input>
       </el-form-item>
       <el-form-item :label="text2" v-if="text2 !== ''">
-        <el-select v-model="formInline.status" placeholder="请选择">
-          <el-option
-            :label="item.statusName"
-            :value="item.statusId"
-            v-for="item in allTaskStatusList"
-            :key="item.statusId"
-          ></el-option>
-        </el-select>
+        <el-date-picker
+          v-model="formInline.value1"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        >
+        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <viewsButton type="default" @click="clickSearch">
@@ -41,14 +41,14 @@ export default {
     },
     allTaskStatusList: {
       type: Array,
-      default: () => [],
+      default: [],
     },
   },
   data() {
     return {
       formInline: {
         number: "",
-        status: "",
+        value1: "",
       },
     };
   },
@@ -57,11 +57,8 @@ export default {
 
   methods: {
     clickSearch() {
-<<<<<<< HEAD
       // console.log(this.formInline.number);
-
-=======
->>>>>>> 47f76e8df6ad36f5238e301e88388eeacbbb5eb0
+      // console.log(this.formInline);
       this.$emit("search", this.formInline);
     },
   },
