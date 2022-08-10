@@ -57,11 +57,6 @@ export default {
 
   methods: {
     clickSearch() {
-<<<<<<< HEAD
-      // console.log(this.formInline.number);
-
-=======
->>>>>>> 47f76e8df6ad36f5238e301e88388eeacbbb5eb0
       this.$emit("search", this.formInline);
     },
   },
