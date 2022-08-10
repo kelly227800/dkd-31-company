@@ -6,6 +6,7 @@
     :visible="showDetails"
     width="590px"
     v-if="showDetails"
+    @close="onclose"
   >
     <el-row>
       <el-col :span="12"
@@ -92,9 +93,12 @@ export default {
         this.currentPageIndex = this.currentNodeData.pageIndex;
 
         this.totalPage = this.currentNodeData.totalPage;
-        console.log(disabledUp);
+        // console.log(disabledUp);
       }, 0);
     },
+    onclose() {
+      this.$emit("update:showDetails", false);
+      },
   },
   computed: {
     disabledUp() {

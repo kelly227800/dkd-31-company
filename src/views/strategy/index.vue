@@ -40,7 +40,7 @@
       @clearData="clearDataFn"
     ></dialogs>
     <detailsDialogs
-      :showDetails="showDetails"
+      :showDetails.sync="showDetails"
       :currentNode="currentNode"
       :currentNodeData="currentNodeData"
       ref="getItem"
