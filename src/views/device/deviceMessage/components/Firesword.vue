@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position: relative">
     <el-dialog
       title="货道设置"
       :visible="FiresworddialogVisible"
@@ -22,67 +22,129 @@
               }}</el-col
             >
             <el-col :span="3"
-              ><button class="buttom" @click="Intelligentstocking">
+              ><button class="buttom" @click="Intelligentstockingfn">
                 智能排货
               </button></el-col
             >
           </el-row>
         </el-col>
       </el-row>
-      <div class="div">
-        <div
-          class="main"
-          v-for="item in Cargolanesdeitlist"
-          :key="item.channelId"
-        >
-          <div class="top">
-            <div class="row-col">{{ item.channelCode }}</div>
-            <img :src="item.sku ? item.sku.skuImage : img" alt="" />
-            <p>{{ item.sku ? item.sku.brandName : "暂无商品" }}</p>
-          </div>
-          <div class="bottom">
-            <span class="left">添加</span><span class="rigit">删除</span>
+      <div style="width: 1090px; overflow: hidden">
+        <div class="div">
+          <div
+            class="main"
+            v-for="item in Cargolanesdeitlist"
+            :key="item.channelId"
+          >
+            <div class="top">
+              <div class="row-col">{{ item.channelCode }}</div>
+              <img :src="item.sku ? item.sku.skuImage : img" alt="" />
+              <p>{{ item.sku ? item.sku.brandName : "暂无商品" }}</p>
+            </div>
+            <div class="bottom">
+              <span class="left" @click="add(item.channelId)">添加</span
+              ><span class="rigit" @click="del(item.channelId)">删除</span>
+            </div>
           </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="onyes">确 定</el-button>
+        <el-button type="primary" @click="onyes">确 认</el-button>
       </span></el-dialog
     >
+    <Intelligentstocking
+      :StockingdialogVisible.sync="StockingdialogVisible"
+      :Intelligentstockinglist="Intelligentstockinglist"
+      @Intelligentstocking="Intelligentstocking"
+    ></Intelligentstocking>
+    <commoditySearch
+      :commoditySearchdialogVisible.sync="commoditySearchdialogVisible"
+      @img="imgfn"
+    ></commoditySearch>
+    <i class="position-left el-icon-arrow-left"> </i>
+    <i class="position-right el-icon-arrow-right"> </i>
   </div>
 </template>
 
 <script>
+import Intelligentstocking from "./Intelligentstocking.vue";
+import { getIntelligentstockingapi } from "@/api/device";
+import commoditySearch from "./commoditySearch.vue";
 export default {
   data() {
     return {
       img: "http://likede2-java.itheima.net/image/logo.595745bd.png",
+      StockingdialogVisible: false,
+      Intelligentstockinglist: [],
+      commoditySearchdialogVisible: false,
+      imgan: "",
+      id: "",
     };
   },
   props: {
     FiresworddialogVisible: {},
-    Cargolanesdeitlist: {},
+    Cargolanesdeitlist: {
+      default: () => [],
+    },
     Cargolanestypedei: {},
   },
 
-  created() {
-    console.log(this.Cargolanesdeitlist);
-    console.log(this.Cargolanestypedei);
+  created() {},
+  components: {
+    Intelligentstocking,
+    commoditySearch,
   },
 
   methods: {
     onclose() {
       this.$emit("update:FiresworddialogVisible", false);
     },
-    onyes() {
+    async onyes() {
+      this.$emit("Cargolaneconfiguration");
       this.onclose();
     },
-    Intelligentstocking() {},
+    async Intelligentstockingfn() {
+      this.Intelligentstockinglist = await getIntelligentstockingapi(1);
+      this.StockingdialogVisible = true;
+    },
+    async add(id) {
+      this.commoditySearchdialogVisible = true;
+      this.id = id;
+    },
+    del(id) {
+      this.$emit("del", id);
+    },
+    imgfn(img) {
+      this.$emit("imgfn", this.id, img);
+    },
+    Intelligentstocking() {
+      this.$emit("Intelligentstocking", this.Intelligentstockinglist);
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.position-left {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  font-size: 14px;
+  width: 50px;
+  height: 50px;
+  color: #d8dde3;
+}
+.position-right {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  font-size: 14px;
+  width: 50px;
+  height: 50px;
+  color: #000;
+}
 .buttom {
   min-width: 80px;
   height: 36px;
@@ -104,15 +166,14 @@ export default {
   line-height: 32px;
 }
 .div {
-  width: 200%;
+  width: 2180px;
   text-align: center;
-//   margin: auto;
 
   .main {
     float: left;
     height: 200px;
     padding: 2px;
-    margin: 10px;
+    margin: 9px;
     width: 9.1%;
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 6%);
     background-color: #f6f7fb;

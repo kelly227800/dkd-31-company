@@ -38,7 +38,9 @@ export default {
   },
   props: {
     batchdialogVisible: {},
-    batchdialogVisiblelist: {},
+    batchdialogVisiblelist: {
+      default: () => [],
+    },
   },
 
   created() {

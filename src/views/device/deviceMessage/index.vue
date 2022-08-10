@@ -65,6 +65,10 @@
       :FiresworddialogVisible.sync="FiresworddialogVisible"
       :Cargolanesdeitlist="Cargolanesdeitlist"
       :Cargolanestypedei="Cargolanestypedei"
+      @del="del"
+      @imgfn="imgfn"
+      @Intelligentstocking="Intelligentstocking"
+      @Cargolaneconfiguration="Cargolaneconfiguration"
     ></Firesword>
     <Bulkconfiguration
       v-if="batchdialogVisible"
@@ -85,6 +89,7 @@ import {
   getInquiretacticsapi,
   getCargolanesdeitapi,
   getCargolanestypedeitapi,
+  Cargolaneconfigurationapi,
 } from "@/api/device";
 import viewsSearch from "@/components/viewsSearch";
 import viewsForm from "./components/viewsForm.vue";
@@ -279,6 +284,47 @@ export default {
           });
         this.revisecurrentPageRecordslist = revisecurrentPageRecords;
         this.revisedialogVisible = true;
+      });
+    },
+    del(id) {
+      const index = this.Cargolanesdeitlist.findIndex(
+        (e) => e.channelId === id
+      );
+      this.Cargolanesdeitlist[index].sku.skuImage =
+        "http://likede2-java.itheima.net/image/logo.595745bd.png";
+    },
+    imgfn(id, img) {
+      const index = this.Cargolanesdeitlist.findIndex(
+        (e) => e.channelId === id
+      );
+      this.Cargolanesdeitlist[index].sku = {};
+      this.Cargolanesdeitlist[index].sku.skuImage = img.skuImage;
+      this.Cargolanesdeitlist[index].sku.brandName = img.skuName;
+    },
+    Intelligentstocking(list) {
+      let index = 0;
+      list.forEach((e) => {
+        this.Cargolanesdeitlist[index].sku = {};  
+        this.Cargolanesdeitlist[index].sku.skuImage = e.image;
+        this.Cargolanesdeitlist[index].sku.brandName = e.skuName;
+        index++;
+      });
+      this.Cargolanesdeitlist;
+    },
+    Cargolaneconfiguration() {
+      setTimeout(async () => {
+        let arr = [];
+        this.Cargolanesdeitlist.forEach((e) => {
+          arr.push({
+            channelCode: e.channelCode,
+            skuId: e.skuId,
+          });
+        });
+        await Cargolaneconfigurationapi({
+          innerCode: this.$refs.form.currentRow.innerCode,
+          channelList: arr,
+        });
+        this.allTask(1);
       });
     },
   },

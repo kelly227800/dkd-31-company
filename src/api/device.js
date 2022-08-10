@@ -115,3 +115,21 @@ export function getCargolanestypedeitapi(typeId) {
     url: "/vm-service/vmType/" + typeId,
   });
 }
+export function getIntelligentstockingapi(businessId) {
+  return request({
+    url: "/vm-service/sku/businessTop10/" + businessId,
+  });
+}
+export function getcommoditySearchapi(params) {
+  return request({
+    url: "/vm-service/sku/search",
+    params,
+  });
+}
+export function Cargolaneconfigurationapi(data) {
+  return request({
+    url: "/vm-service/channel/channelConfig",
+    method: "PUT",
+    data,
+  });
+}
