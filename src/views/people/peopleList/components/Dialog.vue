@@ -262,7 +262,16 @@ export default {
           // 表单校验
           await this.$refs.ruleForm.validate();
           const res = await modifyUserInfo(this.addFrom.id, this.addFrom);
-          this.$refs.ruleForm.resetFields();
+          (this.addFrom = {
+            userName: "",
+            roleId: 1,
+            mobile: "",
+            regionId: "",
+            regionName: "",
+            status: false,
+            image: "",
+          }),
+            this.$refs.ruleForm.resetFields();
           this.$emit("update:dialogVisible", false);
           console.log(res);
         } catch (error) {
