@@ -95,3 +95,17 @@ export const getUserInfo = (id) => {
     url: `/user-service/user/${id}`,
   });
 };
+
+/**
+ * 修改人员
+ * @param {Number} id 人员id
+ * @param {Object} data  更改后的人员信息
+ * @returns  promise
+ */
+export const modifyUserInfo = (id, data) => {
+  return request({
+    url: `/user-service/user/${id}`,
+    method: "PUT",
+    data,
+  });
+};

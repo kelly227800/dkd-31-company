@@ -2,7 +2,7 @@
   <el-button
     :class="[type, size]"
     class="btn"
-    @click="$emit('click')"
+    @click.native="$emit('click')"
     :disabled="disabled"
   >
     <slot></slot>
