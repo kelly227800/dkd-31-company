@@ -2,7 +2,7 @@
   <div class="bottom_form">
     <el-table
       :data="getSearchList"
-      style="width: 100%"
+      style="width: 100%,font-size:14px"
       highlight-current-row
       @current-change="handleCurrentChange"
       :header-cell-style="{
@@ -21,16 +21,27 @@
       >
       </el-table-column>
       <el-table-column label="操作">
-        <!-- <slot></slot> -->
         <template slot-scope="scope">
-          <viewsButton @click="onMore(scope.row)" type="info"
-            >查看详情</viewsButton
-          >
-          <moreDialog
-            v-if="taskMore.taskStatusTypeEntity"
-            :visible.sync="dialogMoreVisible"
-            :taskMore="taskMore"
-          ></moreDialog>
+          <div style="display: flex">
+            <viewsButton
+              @click.native="$emit('onMore', scope.row.id)"
+              type="info"
+              >查看详情</viewsButton
+            >
+            <viewsButton
+              @click.native="$emit('onChange', scope.row.id)"
+              type="info"
+              size="mini"
+              >修改</viewsButton
+            >
+            <viewsButton
+              @click.native="$emit('onDelete', scope.row.id)"
+              type="info"
+              size="mini"
+              style="color: red"
+              >删除</viewsButton
+            >
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -38,9 +49,8 @@
 </template>
 
 <script>
-import moreDialog from "./moreDialog.vue";
 import viewsButton from "@/components/viewsButton";
-import { taskInfo } from "@/api/workOrder";
+import { getDetailsList } from "@/api/point";
 export default {
   props: {
     getSearchList: {
@@ -58,12 +68,16 @@ export default {
   },
   data() {
     return {
-      dialogMoreVisible: false,
-      taskMore: {},
+      // taskMore: [],
+      // taskChange: "",
+      // params: {
+      //   pageIndex: 1,
+      //   pageSize: 10,
+      //   regionId: "",
+      // },
     };
   },
   components: {
-    moreDialog,
     viewsButton,
   },
 
@@ -78,11 +92,22 @@ export default {
     },
     async onMore(row) {
       this.dialogMoreVisible = true;
-      this.taskMore = await taskInfo(row.taskId);
-      console.log(this.taskMore);
+      // this.params.regionId = row.id;
+      // const res = await getDetailsList(this.params);
+      // this.taskMore = res.currentPageRecords;
+    },
+    async onChange(row) {
+      this.dialogChangeVisible = true;
+      // this.taskChange = row.id;
+      // this.$refs.changeDialog.taskChange(row.id);
+    },
+    async onDelete(row) {
+      this.deleteDialogVisible = true;
+      // this.taskMore = await taskInfo(row.taskId);
+      // console.log(this.taskMore);
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
