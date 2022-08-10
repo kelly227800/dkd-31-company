@@ -52,6 +52,8 @@
           :autosize="{ minRows: 4, maxRows: 8 }"
           placeholder="请输入备注（不超过40字）"
           v-model="params.desc"
+          maxlength="40"
+          show-word-limit
         >
         </el-input>
       </el-form-item>
@@ -131,7 +133,7 @@ export default {
     async onSave() {
       await this.$refs.params.validate();
       try {
-        const res = await getCreateList();
+        const res = await getCreateList(this.params);
         console.log(res);
         this.onClose();
         this.$emit("addSave");

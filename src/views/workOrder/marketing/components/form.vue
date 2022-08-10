@@ -21,13 +21,26 @@
       >
       </el-table-column>
       <el-table-column label="操作">
-        <slot></slot>
+        <!-- <slot></slot> -->
+        <template slot-scope="scope">
+          <viewsButton @click="onMore(scope.row)" type="info"
+            >查看详情</viewsButton
+          >
+          <moreDialog
+            v-if="taskMore.taskStatusTypeEntity"
+            :visible.sync="dialogMoreVisible"
+            :taskMore="taskMore"
+          ></moreDialog>
+        </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import moreDialog from "./moreDialog.vue";
+import viewsButton from "@/components/viewsButton";
+import { taskInfo } from "@/api/workOrder";
 export default {
   props: {
     getSearchList: {
@@ -44,7 +57,14 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      dialogMoreVisible: false,
+      taskMore: {},
+    };
+  },
+  components: {
+    moreDialog,
+    viewsButton,
   },
 
   created() {},
@@ -55,6 +75,11 @@ export default {
     },
     indexMethod(index) {
       return (this.getSearchInfo.pageIndex - 1) * 10 + index + 1;
+    },
+    async onMore(row) {
+      this.dialogMoreVisible = true;
+      this.taskMore = await taskInfo(row.taskId);
+      console.log(this.taskMore);
     },
   },
 };

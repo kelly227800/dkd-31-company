@@ -18,6 +18,7 @@
       </div>
       <!-- 表格 -->
       <viewsForm
+        ref="form"
         :getSearchList="getSearchList"
         :tableHead="tableHead"
         :tableFoot="tableFoot"
@@ -47,17 +48,24 @@
         :disabledDown="disabledDown"
       ></viewsPage>
     </div>
+    <addDevicetype
+      v-if="dialogVisible"
+      :dialogVisible.sync="dialogVisible"
+      :currentRowitem="currentRowitem"
+      @update="allTask"
+    ></addDevicetype>
   </div>
 </template>
 
 <script>
 import moment from "moment";
 import { allTaskStatus } from "@/api/workOrder";
-import { gettypelistapi } from "@/api/device";
+import { gettypelistapi, delDevicetypeapi } from "@/api/device";
 import viewsSearch from "@/components/viewsSearch";
 import viewsForm from "./components/viewsForm.vue";
 import viewsPage from "@/components/viewsPage";
 import viewsButton from "@/components/viewsButton";
+import addDevicetype from "./components/addDevicetype.vue";
 export default {
   name: "marketing",
   data() {
@@ -96,6 +104,9 @@ export default {
         number: "",
         status: "",
       },
+      dialogVisible: false,
+      currentRowitem: {},
+      typeId: "",
     };
   },
   components: {
@@ -103,6 +114,7 @@ export default {
     viewsForm,
     viewsPage,
     viewsButton,
+    addDevicetype,
   },
 
   created() {
@@ -112,13 +124,9 @@ export default {
 
   methods: {
     onAdd() {
-      console.log("新建");
-    },
-    onSet() {
-      console.log("配置");
-    },
-    onMore() {
-      console.log("详情");
+      // console.log("新建");
+      this.currentRowitem = {};
+      this.dialogVisible = true;
     },
     searchForm() {
       this.params.name = this.$refs.model.formInline.number;
@@ -160,8 +168,22 @@ export default {
         return value;
       });
     },
-    revisefn() {},
-    delfn() {},
+    revisefn() {
+      setTimeout(() => {
+        this.currentRowitem = this.$refs.form.currentRow;
+        this.dialogVisible = true;
+      });
+    },
+    delfn() {
+      setTimeout(async () => {
+        try {
+          this.typeId = this.$refs.form.currentRow.typeId;
+          await delDevicetypeapi(this.typeId);
+        } catch (error) {
+          this.$message.error("不允许");
+        }
+      });
+    },
   },
 };
 </script>

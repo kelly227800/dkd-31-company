@@ -41,7 +41,7 @@ export default {
     },
     allTaskStatusList: {
       type: Array,
-      default: [],
+      default: () => [],
     },
   },
   data() {
@@ -57,7 +57,6 @@ export default {
 
   methods: {
     clickSearch() {
-      console.log("查询");
       this.$emit("search", this.formInline);
     },
   },
