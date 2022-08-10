@@ -1,15 +1,28 @@
 import request from "@/utils/request";
 
 /**
+ * 上传图片
+ * @param {*} fileName
+ * @returns
+ */
+export function uploadImg(fileName) {
+  return request({
+    url: "/vm-service/sku/fileUpload",
+    headers: { "Content-Type": "multipart/form-data" },
+    method: "POST",
+    data: fileName,
+  });
+}
+/**
  * 商品数据导入
- * @param {String} fileName 文件名
+ * @param {} fileName 文件名
  * @returns promise
  */
-export function getGoodsData(fileName) {
+export function uploadGoodsData(fileName) {
   return request({
-    url: "/vm-service/sku/upload",
+    url: "/vm-service/sku/fileUpload",
     method: "POST",
-    fileName,
+    data: { fileName: fileName },
   });
 }
 
@@ -18,12 +31,14 @@ export function getGoodsData(fileName) {
  * @param {string} className 商品名称
  * @returns promise
  */
-export function searchGoodsType(pageIndex,pageSize,className) {
+export function searchGoodsType(pageIndex, pageSize, className) {
   return request({
     url: "/vm-service/skuClass/search",
     params: {
-        pageIndex,pageSize,className
-    }
+      pageIndex,
+      pageSize,
+      className,
+    },
   });
 }
 
@@ -37,7 +52,9 @@ export function addGoodsType(className) {
   return request({
     url: "/vm-service/skuClass",
     method: "POST",
-    className,
+    data: {
+      className,
+    },
   });
 }
 
@@ -52,7 +69,7 @@ export function changeGoodsType(classId, className) {
   return request({
     url: "/vm-service/skuClass/" + classId,
     method: "PUT",
-    className,
+    data: { className: className },
   });
 }
 
@@ -80,10 +97,12 @@ export function deleteGoodsType(classId) {
 export function searchGoods(pageIndex, pageSize, skuName, classId) {
   return request({
     url: "/vm-service/sku/search",
-    pageIndex,
-    pageSize,
-    skuName,
-    classId,
+    params: {
+      pageIndex,
+      pageSize,
+      skuName,
+      classId,
+    },
   });
 }
 
@@ -91,10 +110,11 @@ export function searchGoods(pageIndex, pageSize, skuName, classId) {
  * 新增商品
  * @returns promise
  */
-export function addGoods() {
+export function addGoods(data) {
   return request({
     url: "/vm-service/sku",
     method: "POST",
+    data,
   });
 }
 
@@ -103,9 +123,10 @@ export function addGoods() {
  * @param {*} skuId 商品Id
  * @returns promise
  */
-export function changeGoods(skuId) {
+export function changeGoods(skuId,data) {
   return request({
     url: "/vm-service/sku/" + skuId,
     method: "PUT",
+    data
   });
 }

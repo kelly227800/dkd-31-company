@@ -1,26 +1,25 @@
 <template>
   <div class="pagination">
-    <div>
-      共{{ searchInfo.totalCount }}条记录&nbsp;&nbsp;第{{ pageIndex }}/{{
-        searchInfo.totalPage
-      }}页
+    <div v-show="searchInfo.totalCount != 0 && searchInfo.totalCount != 1">
+      共{{ searchInfo.totalCount }}条记录&nbsp;&nbsp;第{{
+        searchInfo.pageIndex
+      }}/{{ searchInfo.totalPage }}页
     </div>
-    <div class="page_right">
-      <viewsButton
-        @click.native="onPrePage"
-        size="small"
-        type="primary"
-        :disabled="disabledPre"
-        >上一页</viewsButton
-      >
-      <viewsButton
-        @click.native="onNextPage"
-        size="small"
-        type="primary"
-        :disabled="disabledNext"
-        >下一页</viewsButton
-      >
-    </div>
+
+    <el-pagination
+      ref="pagination"
+      background
+      hide-on-single-pag="true"
+      :current-page="Number(searchInfo.pageIndex)"
+      prev-text="上一页"
+      next-text="下一页"
+      layout="prev, next"
+      :page-size="10"
+      :total="Number(searchInfo.totalCount)"
+      style="display: inline-block"
+      @current-change="handleCurrentChange"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -33,59 +32,16 @@ export default {
   props: {
     searchInfo: {
       type: Object,
-      default: {},
-    },
-    disabledPre: {
-      type: Boolean,
-      default: true,
-    },
-    disabledNext: {
-      type: Boolean,
-      default: false,
+      required: true,
     },
   },
   data() {
-    return {
-      pageIndex: 1,
-    };
+    return {};
   },
-
-  created() {},
-  // 0条数据的处理
-  beforeUpdate() {
-    if (this.searchInfo.totalPage == 0) {
-      this.pageIndex = 0;
-      this.$emit("disabledPreFn");
-      this.$emit("disabledNextFn");
-    }
-  },
-
   methods: {
-    // 点击上一页
-    onPrePage() {
-      this.pageIndex--;
-      //   this.$emit("pageIndex", pageIndex);
-      this.changeDisabled();
-    },
-    // 点击下一页
-    onNextPage() {
-      this.pageIndex++;
-      this.changeDisabled();
-      //   this.$emit("pageIndex", pageIndex);
-    },
-    // 改变分页按钮可点击状态
-    changeDisabled() {
-      //   console.log(this.searchInfo.totalPage);
-      if (this.pageIndex == 1) {
-        this.$emit("disabledPreFn");
-      } else {
-        this.$emit("cancelDisabledPre");
-      }
-      if (this.pageIndex == this.searchInfo.totalPage) {
-        this.$emit("disabledNextFn");
-      } else {
-        this.$emit("cancelDisabledNext");
-      }
+    // 点击改变页码
+    handleCurrentChange(val) {
+      this.$emit("changePage", val);
     },
   },
 };
@@ -99,13 +55,29 @@ export default {
   color: #dbdfe5;
   font-size: 16px;
 
-  .page_right {
-    display: flex;
-  }
-  .el-button {
+  ::v-deep.btn-prev {
+    width: 70px;
+    height: 32px;
+    background-color: #d5ddf8;
     margin: 0 16px;
     border-radius: 2px;
     font-size: 13px;
+    &:disabled {
+      color: #d8dde3;
+      background: #edf0f9;
+    }
+  }
+  ::v-deep.btn-next {
+    width: 70px;
+    height: 32px;
+    background-color: #d5ddf8;
+    margin: 0 16px;
+    border-radius: 2px;
+    font-size: 13px;
+    &:disabled {
+      color: #d8dde3;
+      background: #edf0f9;
+    }
   }
 }
 </style>
