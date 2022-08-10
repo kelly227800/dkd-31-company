@@ -1,15 +1,15 @@
 <template>
   <div class="pagination">
-    <div v-show="searchInfo.totalCount!=0&&searchInfo.totalCount!=1">
+    <div v-show="searchInfo.totalCount != 0 && searchInfo.totalCount != 1">
       共{{ searchInfo.totalCount }}条记录&nbsp;&nbsp;第{{
         searchInfo.pageIndex
       }}/{{ searchInfo.totalPage }}页
     </div>
 
     <el-pagination
-      hide-on-single-page
       ref="pagination"
       background
+      hide-on-single-pag="true"
       :current-page="Number(searchInfo.pageIndex)"
       prev-text="上一页"
       next-text="下一页"
