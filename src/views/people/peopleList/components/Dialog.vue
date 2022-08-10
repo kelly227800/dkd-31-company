@@ -96,7 +96,12 @@
 </template>
 
 <script>
-import { getRoleList, getRegionList, addUser } from "@/api/people";
+import {
+  getRoleList,
+  getRegionList,
+  addUser,
+  modifyUserInfo,
+} from "@/api/people";
 export default {
   data() {
     const getName = async (rules, value, callback) => {
@@ -158,9 +163,9 @@ export default {
             trigger: "blur",
           },
         ],
-        region: [
-          { required: true, message: "请选择负责区域", trigger: "blur" },
-        ],
+        // region: [
+        //   { required: true, message: "请选择负责区域", trigger: "blur" },
+        // ],
         image: [{ required: true, message: "请上传头像" }],
       },
     };
@@ -196,6 +201,7 @@ export default {
           this.addFrom.regionName = this.Personnel.regionName;
           this.addFrom.status = this.Personnel.status;
           this.addFrom.image = this.Personnel.image;
+          this.addFrom.id = this.Personnel.id;
         }
         return this.addFrom;
       },
@@ -238,25 +244,52 @@ export default {
       }
       return isJPG && isLt2M;
     },
-    // 新增人员
+    // 编辑和新增人员
     async onSubmit() {
       // console.log(this.regionList);
       // console.log(this.addFrom);
-      try {
-        const region = this.regionList.filter(
-          (item) => item.id == this.addFrom.regionId
-        );
-        console.log(region);
-        // console.log(this.$refs.img.src);
-        this.addFrom.regionName = region[0].name;
-        this.addFrom.image = this.$refs.img.src;
-        // console.log(this.addFrom);
-        // 表单校验
-        await this.$refs.ruleForm.validate();
-        const res = await addUser(this.addFrom);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
+      // 编辑人员
+      if (this.addFrom.id) {
+        try {
+          const region = this.regionList.filter(
+            (item) => item.id == this.addFrom.regionId
+          );
+          console.log(region);
+          // console.log(this.$refs.img.src);
+          this.addFrom.regionName = region[0].name;
+          this.addFrom.image = this.$refs.img.src;
+          // console.log(this.addFrom);
+          // 表单校验
+          await this.$refs.ruleForm.validate();
+          const res = await modifyUserInfo(this.addFrom.id, this.addFrom);
+          this.$refs.ruleForm.resetFields();
+          this.$emit("update:dialogVisible", false);
+          console.log(res);
+        } catch (error) {
+          // console.log(error);
+          this.$message.error("名字或手机号重复");
+        }
+      } else {
+        // 编辑人员
+        try {
+          const region = this.regionList.filter(
+            (item) => item.id == this.addFrom.regionId
+          );
+          console.log(region);
+          // console.log(this.$refs.img.src);
+          this.addFrom.regionName = region[0].name;
+          this.addFrom.image = this.$refs.img.src;
+          // console.log(this.addFrom);
+          // 表单校验
+          await this.$refs.ruleForm.validate();
+          const res = await addUser(this.addFrom);
+          this.$refs.ruleForm.resetFields();
+          this.$emit("update:dialogVisible", false);
+          console.log(res);
+        } catch (error) {
+          // console.log(error);
+          this.$message.error("名字或手机号重复");
+        }
       }
     },
     onClose() {
