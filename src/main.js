@@ -24,7 +24,7 @@ import moment from "moment";
 Vue.prototype.$moment = moment;
 moment.locale("zh-cn");
 // 引入echarts
-import echarts from "echarts";
+import * as echarts from "echarts";
 Vue.prototype.$echarts = echarts;
 
 /**
