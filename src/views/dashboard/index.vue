@@ -330,6 +330,10 @@ export default {
 
     //
       // pieChart
+
+
+
+      
       const chart = document.querySelector("#pieChart");
       if (chart) {
         const myChart = echarts.init(chart);

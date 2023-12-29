@@ -24,6 +24,10 @@
         :tableHead="tableHead"
         :getSearchInfo="getSearchInfo"
         ref="form"
+
+
+
+        
       >
         <div style="display: flex">
           <span class="span" @click="cargolanesfn">货道</span>
