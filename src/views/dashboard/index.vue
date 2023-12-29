@@ -324,6 +324,11 @@ export default {
       console.log(2);
     },
     getpieChart() {
+
+
+
+
+    //
       // pieChart
       const chart = document.querySelector("#pieChart");
       if (chart) {
